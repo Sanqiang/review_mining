@@ -8,11 +8,7 @@ public class WordTest {
 
 	@Test
 	public void testDocProcess() {
-		new Word().processDocument("there is good restaurant.");
-		new Word().processDocument("I am doctor.");
-		new Word().processDocument("The food is really good.");
-		new Word().processDocument("The food tasts good.");
-		new Word().processDocument("I like the delicous food.");
+		new Word().processDocument("red red sauce is pretty good, but I like white meat");
 		assert(true);
 	}
 

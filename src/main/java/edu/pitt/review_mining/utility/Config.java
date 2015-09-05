@@ -1,4 +1,4 @@
-package edu.pitt.review_mining.constant;
+package edu.pitt.review_mining.utility;
 
 import edu.stanford.nlp.parser.nndep.DependencyParser;
 
