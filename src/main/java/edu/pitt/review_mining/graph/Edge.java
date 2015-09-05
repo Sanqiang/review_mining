@@ -1,7 +1,5 @@
 package edu.pitt.review_mining.graph;
 
-import java.util.Random;
-import java.util.UUID;
 
 import edu.pitt.review_mining.utility.DependencyType;
 

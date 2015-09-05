@@ -1,5 +1,7 @@
 package edu.pitt.review_mining.utility;
 
+import edu.stanford.nlp.trees.Tree;
+
 public class Helper {
 	public static PartOfSpeech mapPartOfSpeech(String postag){
 		PartOfSpeech partOfSpeech=PartOfSpeech.OTHER;
@@ -58,5 +60,19 @@ public class Helper {
 			break;
 		}
 		return mappedRelType;
+	}
+	
+	public static boolean isClause(String tag) {
+		boolean is_clause = false;
+		for (String clause_tag : Config.PENNTREE_CLAUSE_TAGS) {
+			if (clause_tag.equals(tag)) {
+				is_clause = true;
+				break;
+			}
+		}
+		return is_clause;
+	}
+
+	public static void mapTreeSentence(Tree tree) {
 	}
 }

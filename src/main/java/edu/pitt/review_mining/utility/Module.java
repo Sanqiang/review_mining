@@ -1,5 +1,6 @@
 package edu.pitt.review_mining.utility;
 
+import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.parser.nndep.DependencyParser;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 
@@ -19,11 +20,14 @@ public class Module {
 
 	// nested module
 	private MaxentTagger _tagger = null;
-	private DependencyParser _parser = null;
+	private DependencyParser _dep_parser = null;
+	private LexicalizedParser _lex_parser = null;
 
 	private Module() {
 		_tagger = new MaxentTagger(Config.PATH_TAGGER);
-		_parser = DependencyParser.loadFromModelFile(Config.CONFIG_DEPENDENCY_PARSER);
+		_dep_parser = DependencyParser.loadFromModelFile(Config.CONFIG_DEPENDENCY_PARSER);
+		String[] options = { "-maxLength", "80", "-retainTmpSubcategories" };
+		_lex_parser = LexicalizedParser.loadModel(Config.CONFIG_PCFG_PARSER, options);
 	}
 
 	public MaxentTagger getTagger() {
@@ -31,6 +35,10 @@ public class Module {
 	}
 
 	public DependencyParser getDependencyParser() {
-		return getInst()._parser;
+		return getInst()._dep_parser;
+	}
+	
+	public LexicalizedParser getLexicalizedParser(){
+		return getInst()._lex_parser;
 	}
 }

@@ -11,6 +11,7 @@ import java.util.Properties;
 import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
+import edu.pitt.review_mining.utility.Config;
 import edu.pitt.review_mining.utility.DependencyType;
 import edu.pitt.review_mining.utility.Helper;
 import edu.pitt.review_mining.utility.Module;
@@ -22,7 +23,9 @@ import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
 import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.ling.Label;
 import edu.stanford.nlp.ling.TaggedWord;
+import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.parser.nndep.DependencyParser;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
@@ -31,24 +34,41 @@ import edu.stanford.nlp.semgraph.SemanticGraph;
 import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.GrammaticalStructure;
+import edu.stanford.nlp.trees.GrammaticalStructureFactory;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
+import edu.stanford.nlp.trees.TreebankLanguagePack;
 import edu.stanford.nlp.trees.TypedDependency;
 import edu.stanford.nlp.util.CoreMap;
 
 public class Word {
 
-	private StanfordCoreNLP pipeline;
-
 	public Word() {
 	}
 
-	public void processDocument(String doc) {
+	
+	
+	public void processSentence(String sentence) {
+	    LexicalizedParser lp = Module.getInst().getLexicalizedParser();
+	    Tree tree = lp.parse(sentence);
+	    boolean is_all_phrase = true;
+	    for (Tree child_tree : tree.children()) {
+	    	if (Helper.isClause(child_tree.value())) {
+				is_all_phrase = false;
+				processSentence(sentence);
+			}
+		}
+	    if (is_all_phrase) {
+			return;
+		}
+	}
+	
+	public void processClause (String clause) {
 		Graph graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
-		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(doc));
-		System.out.println("Start processing: " + doc);
+		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
+		System.out.println("Start processing: " + clause);
 		for (List<HasWord> sentence : tokenizer) {
 			List<TaggedWord> tagged = tagger.tagSentence(sentence);
 			GrammaticalStructure gs = parser.predict(tagged);
