@@ -1,5 +1,8 @@
 package edu.pitt.review_mining.utility;
 
+import java.util.List;
+
+import edu.stanford.nlp.trees.LabeledScoredTreeNode;
 import edu.stanford.nlp.trees.Tree;
 
 public class Helper {
@@ -62,6 +65,15 @@ public class Helper {
 		return mappedRelType;
 	}
 	
+	public static boolean containClause(String sentence){
+		for (String clause_tag : Config.PENNTREE_CLAUSE_TAGS) {
+			if (sentence.contains(clause_tag)) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public static boolean isClause(String tag) {
 		boolean is_clause = false;
 		for (String clause_tag : Config.PENNTREE_CLAUSE_TAGS) {
@@ -73,6 +85,12 @@ public class Helper {
 		return is_clause;
 	}
 
-	public static void mapTreeSentence(Tree tree) {
+	public static String mapTreeSentence(Tree tree) {
+		List<LabeledScoredTreeNode> leaves = tree.getLeaves();
+		StringBuilder sb = new StringBuilder();
+		for (LabeledScoredTreeNode leave : leaves) {
+			sb.append(leave.value()).append(" ");
+		}
+		return sb.toString();
 	}
 }

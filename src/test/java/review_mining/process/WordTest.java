@@ -8,11 +8,13 @@ public class WordTest {
 	
 	@Test
 	public void testProcessSentence() {
-		new Word().processSentence("red red sauce is pretty good, but I like white meat");
+		Word word = new Word();
+		//word.processSentence("red red sauce is pretty good, but I like white meat");
+		word.processSentence("came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");
 		assert(true);
 	}
 
-	@Test
+	//@Test
 	public void testProcessClause() {
 		new Word().processClause("red red sauce is pretty good, but I like white meat");
 		assert(true);

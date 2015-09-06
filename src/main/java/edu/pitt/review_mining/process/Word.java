@@ -5,8 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Queue;
 
 import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
@@ -46,29 +48,43 @@ public class Word {
 	public Word() {
 	}
 
-	
-	
-	public void processSentence(String sentence) {
-	    LexicalizedParser lp = Module.getInst().getLexicalizedParser();
-	    Tree tree = lp.parse(sentence);
-	    boolean is_all_phrase = true;
-	    for (Tree child_tree : tree.children()) {
-	    	if (Helper.isClause(child_tree.value())) {
-				is_all_phrase = false;
-				processSentence(sentence);
+	public String processSentence(String sentence) {
+		StringBuilder sb = new StringBuilder();
+		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
+		Tree tree = lp.parse(sentence);
+		tree = tree.children()[0]; // skip ROOT tag
+		
+		Queue<Tree> queue = new LinkedList<>();
+		queue.addAll(tree.getChildrenAsList());
+		while (queue.size() > 0) {
+			Tree child_tree = queue.poll();
+			queue.addAll(child_tree.getChildrenAsList());
+			if (!child_tree.value().equals("PP") ) {
+				sb.append(Helper.mapTreeSentence(child_tree));
 			}
 		}
-	    if (is_all_phrase) {
-			return;
-		}
+		System.out.println(sb.toString());
+		return sb.toString();
+		
+		
+//		boolean is_all_phrase = true;
+//		for (Tree child_tree : tree.children()) {
+//			// if (Helper.isClause(child_tree.value())) {
+//			//if (Helper.containClause(child_tree.toString())) {
+//			//	is_all_phrase = false;
+//			//	processSentence(Helper.mapTreeSentence(child_tree));
+//			//}else{
+//				processClause(Helper.mapTreeSentence(child_tree));
+//			//}
+//		}
 	}
-	
-	public void processClause (String clause) {
+
+	public void processClause(String clause) {
 		Graph graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
 		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
-		System.out.println("Start processing: " + clause);
+		System.out.println("Parsing : " + clause);
 		for (List<HasWord> sentence : tokenizer) {
 			List<TaggedWord> tagged = tagger.tagSentence(sentence);
 			GrammaticalStructure gs = parser.predict(tagged);
