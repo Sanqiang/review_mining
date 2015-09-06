@@ -11,5 +11,9 @@ public class Config {
 	public final static String CONFIG_DEPENDENCY_PARSER = DependencyParser.DEFAULT_MODEL;
 	public final static String CONFIG_PCFG_PARSER = "edu/stanford/nlp/models/lexparser/englishPCFG.ser.gz";
 
+	
+	//for CFG 
+	//reference tags: https://gist.github.com/nlothian/9240750
 	public final static String[] PENNTREE_CLAUSE_TAGS = { "S", "SBAR", "SBARQ", "SINV", "SQ" };
+	public final static String[] TAGS_FILTER_OUT = {"PP","INTJ"};
 }

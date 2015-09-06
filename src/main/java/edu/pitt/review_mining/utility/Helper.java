@@ -65,24 +65,16 @@ public class Helper {
 		return mappedRelType;
 	}
 	
-	public static boolean containClause(String sentence){
-		for (String clause_tag : Config.PENNTREE_CLAUSE_TAGS) {
-			if (sentence.contains(clause_tag)) {
-				return true;
-			}
-		}
-		return false;
-	}
 	
-	public static boolean isClause(String tag) {
-		boolean is_clause = false;
-		for (String clause_tag : Config.PENNTREE_CLAUSE_TAGS) {
-			if (clause_tag.equals(tag)) {
-				is_clause = true;
+	public static boolean isInArray(String target, String[] arr) {
+		boolean is_in_array = false;
+		for (String item : arr) {
+			if (item.equals(target)) {
+				is_in_array = true;
 				break;
 			}
 		}
-		return is_clause;
+		return is_in_array;
 	}
 
 	public static String mapTreeSentence(Tree tree) {

@@ -10,7 +10,7 @@ public class WordTest {
 	public void testProcessSentence() {
 		Word word = new Word();
 		//word.processSentence("red red sauce is pretty good, but I like white meat");
-		word.processSentence("came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");
+		word.filterSentence("came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");
 		assert(true);
 	}
 

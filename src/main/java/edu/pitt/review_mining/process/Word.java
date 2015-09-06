@@ -1,17 +1,14 @@
 package edu.pitt.review_mining.process;
 
 import java.io.StringReader;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Properties;
 import java.util.Queue;
 
-import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.utility.Config;
@@ -19,42 +16,26 @@ import edu.pitt.review_mining.utility.DependencyType;
 import edu.pitt.review_mining.utility.Helper;
 import edu.pitt.review_mining.utility.Module;
 import edu.pitt.review_mining.utility.PartOfSpeech;
-import edu.stanford.nlp.ling.CoreAnnotations.NamedEntityTagAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.PartOfSpeechAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.SentencesAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TextAnnotation;
-import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
-import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.ling.HasWord;
-import edu.stanford.nlp.ling.Label;
 import edu.stanford.nlp.ling.TaggedWord;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.parser.nndep.DependencyParser;
-import edu.stanford.nlp.pipeline.Annotation;
-import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.process.DocumentPreprocessor;
-import edu.stanford.nlp.semgraph.SemanticGraph;
-import edu.stanford.nlp.semgraph.SemanticGraphCoreAnnotations.CollapsedCCProcessedDependenciesAnnotation;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
 import edu.stanford.nlp.trees.GrammaticalStructure;
-import edu.stanford.nlp.trees.GrammaticalStructureFactory;
 import edu.stanford.nlp.trees.Tree;
-import edu.stanford.nlp.trees.TreeCoreAnnotations.TreeAnnotation;
-import edu.stanford.nlp.trees.TreebankLanguagePack;
 import edu.stanford.nlp.trees.TypedDependency;
-import edu.stanford.nlp.util.CoreMap;
 
 public class Word {
 
 	public Word() {
 	}
 
-	public String processSentence(String sentence) {
-		StringBuilder sb = new StringBuilder();
+	
+	public Tree filterSentence(String sentence) {
 		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
 		Tree tree = lp.parse(sentence);
 		tree = tree.children()[0]; // skip ROOT tag
-
 		Queue<Tree> queue_nodes = new LinkedList<>();
 		for (int i = 0; i < tree.children().length; i++) {
 			queue_nodes.add(tree.children()[i]);
@@ -62,20 +43,17 @@ public class Word {
 		while (true) {
 			Tree child_tree = queue_nodes.poll();
 			for (int i = 0; i < child_tree.children().length; i++) {
-				if (child_tree.children()[i].value().equals("PP")) {
+				if (Helper.isInArray(child_tree.children()[i].value(), Config.TAGS_FILTER_OUT) ) {
 					child_tree.removeChild(i);
 				} else {
 					queue_nodes.add(child_tree.children()[i]);
 				}
 			}
-
 			if (queue_nodes.size() == 0) {
 				break;
 			}
-
 		}
-
-		return sb.toString();
+		return tree;
 	}
 
 	public void processClause(String clause) {
