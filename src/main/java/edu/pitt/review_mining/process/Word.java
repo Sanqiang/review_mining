@@ -8,6 +8,11 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
 
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
@@ -31,7 +36,6 @@ public class Word {
 	public Word() {
 	}
 
-	
 	public Tree filterSentence(String sentence) {
 		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
 		Tree tree = lp.parse(sentence);
@@ -43,7 +47,7 @@ public class Word {
 		while (true) {
 			Tree child_tree = queue_nodes.poll();
 			for (int i = 0; i < child_tree.children().length; i++) {
-				if (Helper.isInArray(child_tree.children()[i].value(), Config.TAGS_FILTER_OUT) ) {
+				if (Helper.isInArray(child_tree.children()[i].value(), Config.TAGS_FILTER_OUT)) {
 					child_tree.removeChild(i);
 				} else {
 					queue_nodes.add(child_tree.children()[i]);
@@ -54,6 +58,22 @@ public class Word {
 			}
 		}
 		return tree;
+	}
+
+	public ArrayList<Tree> splitTree(Tree tree) {
+		ArrayList<Tree> trees = new ArrayList<>();
+		boolean is_simple_sent = true;
+		for (Tree child_tree : tree.children()) {
+			if (Helper.isInArray(child_tree.value(), Config.PENNTREE_CLAUSE_TAGS)) {
+				is_simple_sent = false;
+			}
+			trees.add(child_tree);
+		}
+		if (is_simple_sent) {
+			trees.clear();
+			trees.add(tree);
+		}
+		return trees;
 	}
 
 	public void processClause(String clause) {
