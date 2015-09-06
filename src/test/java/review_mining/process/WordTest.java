@@ -10,6 +10,15 @@ import edu.stanford.nlp.trees.Tree;
 public class WordTest {
 	
 	@Test
+	public void testDetectPhrase(){
+		Word word = new Word();
+		boolean is_phrase = word.detectPhrase("big bang");
+		System.out.println(is_phrase);
+		assert(true);
+	}
+	
+	
+	//@Test
 	public void testSplitSentence() {
 		Word word = new Word();
 		Tree tree = word.filterSentence("came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");

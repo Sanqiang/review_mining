@@ -1,6 +1,13 @@
 package edu.pitt.review_mining.process;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.NotActiveException;
 import java.io.StringReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,6 +18,8 @@ import java.util.Queue;
 import java.util.Stack;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.HttpsURLConnection;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -36,6 +45,23 @@ public class Word {
 	public Word() {
 	}
 
+	
+	public boolean detectPhrase(String phrase) {
+		phrase = phrase.replace(" ", "_");
+		String url = "https://en.wikipedia.org/wiki/" + phrase;
+		try {
+			URL obj = new URL(url);
+			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+			con.setRequestMethod("GET");
+			con.getInputStream();
+		} catch (FileNotFoundException e) {
+			return false;
+		}catch (IOException e) {
+			e.printStackTrace();
+		}
+		return true;
+	}
+	
 	public Tree filterSentence(String sentence) {
 		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
 		Tree tree = lp.parse(sentence);
