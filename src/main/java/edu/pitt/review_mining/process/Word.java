@@ -1,6 +1,7 @@
 package edu.pitt.review_mining.process;
 
 import java.io.StringReader;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,30 +54,28 @@ public class Word {
 		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
 		Tree tree = lp.parse(sentence);
 		tree = tree.children()[0]; // skip ROOT tag
-		
-		Queue<Tree> queue = new LinkedList<>();
-		queue.addAll(tree.getChildrenAsList());
-		while (queue.size() > 0) {
-			Tree child_tree = queue.poll();
-			queue.addAll(child_tree.getChildrenAsList());
-			if (!child_tree.value().equals("PP") ) {
-				sb.append(Helper.mapTreeSentence(child_tree));
-			}
+
+		Queue<Tree> queue_nodes = new LinkedList<>();
+		for (int i = 0; i < tree.children().length; i++) {
+			queue_nodes.add(tree.children()[i]);
 		}
-		System.out.println(sb.toString());
+		while (true) {
+			Tree child_tree = queue_nodes.poll();
+			for (int i = 0; i < child_tree.children().length; i++) {
+				if (child_tree.children()[i].value().equals("PP")) {
+					child_tree.removeChild(i);
+				} else {
+					queue_nodes.add(child_tree.children()[i]);
+				}
+			}
+
+			if (queue_nodes.size() == 0) {
+				break;
+			}
+
+		}
+
 		return sb.toString();
-		
-		
-//		boolean is_all_phrase = true;
-//		for (Tree child_tree : tree.children()) {
-//			// if (Helper.isClause(child_tree.value())) {
-//			//if (Helper.containClause(child_tree.toString())) {
-//			//	is_all_phrase = false;
-//			//	processSentence(Helper.mapTreeSentence(child_tree));
-//			//}else{
-//				processClause(Helper.mapTreeSentence(child_tree));
-//			//}
-//		}
 	}
 
 	public void processClause(String clause) {
