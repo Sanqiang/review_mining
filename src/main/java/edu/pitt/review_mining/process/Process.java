@@ -35,9 +35,26 @@ public class Process {
 	public Process() {
 	}
 
+	//CLI function
+	public void process(String sentence) {
+		sentence = preprocessSentence(sentence);
+		Tree tree = filterSentence(sentence);
+		ArrayList<Tree> trees = splitTree(tree);
+		for (int i = trees.size() - 1; i >=0; i--) {
+			Tree child_tree = trees.get(i);
+			ArrayList<Node> candidates_nodes = extractCenterWords(Helper.mapTreeSentence(child_tree));
+			if (candidates_nodes.size() > 0) {
+				System.out.println(candidates_nodes.get(0).getLemma());
+				break;
+			}
+		}
+		
+	}
+	
+	//preprocess: tokenize by tagger / phrase detection by xx xx NOUN / xx NOUN with wikipedia
 	public String preprocessSentence(String sentence) {
 		StringBuilder sb = new StringBuilder();
-		// format punctuation
+		// format punctuation and phrase 
 		MaxentTagger tagger = Module.getInst().getTagger();
 		List<List<HasWord>> sents = MaxentTagger.tokenizeText(new StringReader(sentence));
 		for (List<HasWord> sent : sents) {
@@ -68,6 +85,7 @@ public class Process {
 		return sb.toString();
 	}
 
+	//using wikipedia for phrase detect
 	public boolean detectPhrase(String phrase) {
 		phrase = phrase.replace(" ", "_");
 		String url = "https://en.wikipedia.org/wiki/" + phrase;
@@ -108,6 +126,7 @@ public class Process {
 		return tree;
 	}
 
+	//one-layer split tree
 	public ArrayList<Tree> splitTree(Tree tree) {
 		ArrayList<Tree> trees = new ArrayList<>();
 		boolean is_simple_sent = true;
@@ -124,7 +143,8 @@ public class Process {
 		return trees;
 	}
 
-	public void processClause(String clause) {
+	//extract center words by largest number of dependency relation
+	public ArrayList<Node> extractCenterWords(String clause) {
 		Graph graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
@@ -162,7 +182,7 @@ public class Process {
 			System.out.println("Center word is: " + node.getLemma() + ", InComing: " + node.getIncomingEdges().size()
 					+ " OutComing: " + node.getOutcomingEdges().size());
 		}
-
+		return candidates_nodes;
 	}
 
 	public ArrayList<Node> getCenterWordCandidates(Graph graph) {

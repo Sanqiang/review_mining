@@ -10,6 +10,13 @@ import edu.stanford.nlp.trees.Tree;
 public class ProcessTest {
 	
 	@Test
+	public void testProcess(){
+		Process word = new Process();
+		word.process("came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner.");
+		assert(true);
+	}
+	
+	//@Test
 	public void testPreprocessSentence() {
 		Process word = new Process();
 		String sent =  word.preprocessSentence("came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner.");
@@ -48,7 +55,7 @@ public class ProcessTest {
 
 	//@Test
 	public void testProcessClause() {
-		new Process().processClause("red red sauce is pretty good, but I like white meat");
+		new Process().extractCenterWords("red red sauce is pretty good, but I like white meat");
 		assert(true);
 	}
 
