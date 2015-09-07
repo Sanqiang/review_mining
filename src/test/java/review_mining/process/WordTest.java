@@ -10,6 +10,14 @@ import edu.stanford.nlp.trees.Tree;
 public class WordTest {
 	
 	@Test
+	public void testPreprocessSentence() {
+		Word word = new Word();
+		String sent =  word.preprocessSentence("came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner.");
+		System.out.println(sent);
+		assert(true);
+	}
+	
+	//@Test
 	public void testDetectPhrase(){
 		Word word = new Word();
 		boolean is_phrase = word.detectPhrase("big bang");

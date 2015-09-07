@@ -1,12 +1,8 @@
 package edu.pitt.review_mining.process;
 
-import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.NotActiveException;
 import java.io.StringReader;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -15,13 +11,9 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Stack;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.StringTokenizer;
 
 import javax.net.ssl.HttpsURLConnection;
-
-import org.apache.commons.lang3.StringUtils;
 
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
@@ -45,7 +37,42 @@ public class Word {
 	public Word() {
 	}
 
-	
+	public String preprocessSentence(String sentence) {
+		StringBuilder sb = new StringBuilder();
+		// format punctuation
+		MaxentTagger tagger = Module.getInst().getTagger();
+		List<List<HasWord>> sents = MaxentTagger.tokenizeText(new StringReader(sentence));
+		for (List<HasWord> sent : sents) {
+			List<TaggedWord> tagged_sent = tagger.tagSentence(sent);
+			for (int i = 0; i < tagged_sent.size(); i++) {
+				if (i + 2 < tagged_sent.size() && Helper.mapPartOfSpeech(tagged_sent.get(i+2).tag()) == PartOfSpeech.NOUN ) {
+					String trigram = String.join(" ", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word(),
+							tagged_sent.get(i + 2).word());
+					if (detectPhrase(trigram)) {
+						sb.append(String.join("_", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word(),
+								tagged_sent.get(i + 2).word())).append(" ");
+						i += 2;
+						continue;
+					}
+				}
+				if (i + 1 < tagged_sent.size() && Helper.mapPartOfSpeech(tagged_sent.get(i+1).tag()) == PartOfSpeech.NOUN) {
+					String bigram = String.join(" ", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word());
+					if (detectPhrase(bigram)) {
+						sb.append(String.join("_", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word()))
+								.append(" ");
+						i += 1;
+						continue;
+					}
+				}
+
+				sb.append(tagged_sent.get(i).word()).append(" ");
+			}
+
+		}
+
+		return sb.toString();
+	}
+
 	public boolean detectPhrase(String phrase) {
 		phrase = phrase.replace(" ", "_");
 		String url = "https://en.wikipedia.org/wiki/" + phrase;
@@ -56,12 +83,12 @@ public class Word {
 			con.getInputStream();
 		} catch (FileNotFoundException e) {
 			return false;
-		}catch (IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return true;
 	}
-	
+
 	public Tree filterSentence(String sentence) {
 		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
 		Tree tree = lp.parse(sentence);
