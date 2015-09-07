@@ -4,14 +4,14 @@ import java.util.ArrayList;
 
 import org.junit.Test;
 
-import edu.pitt.review_mining.process.Word;
+import edu.pitt.review_mining.process.Process;
 import edu.stanford.nlp.trees.Tree;
 
-public class WordTest {
+public class ProcessTest {
 	
 	@Test
 	public void testPreprocessSentence() {
-		Word word = new Word();
+		Process word = new Process();
 		String sent =  word.preprocessSentence("came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner.");
 		System.out.println(sent);
 		assert(true);
@@ -19,7 +19,7 @@ public class WordTest {
 	
 	//@Test
 	public void testDetectPhrase(){
-		Word word = new Word();
+		Process word = new Process();
 		boolean is_phrase = word.detectPhrase("big bang");
 		System.out.println(is_phrase);
 		assert(true);
@@ -28,7 +28,7 @@ public class WordTest {
 	
 	//@Test
 	public void testSplitSentence() {
-		Word word = new Word();
+		Process word = new Process();
 		Tree tree = word.filterSentence("came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");
 		ArrayList<Tree> trees = word.splitTree(tree);
 		for (Tree child_tree : trees) {
@@ -39,7 +39,7 @@ public class WordTest {
 	
 	//@Test
 	public void testFilterSentence() {
-		Word word = new Word();
+		Process word = new Process();
 		//word.processSentence("red red sauce is pretty good, but I like white meat");
 		Tree tree = word.filterSentence("came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");
 		System.out.println(tree);
@@ -48,7 +48,7 @@ public class WordTest {
 
 	//@Test
 	public void testProcessClause() {
-		new Word().processClause("red red sauce is pretty good, but I like white meat");
+		new Process().processClause("red red sauce is pretty good, but I like white meat");
 		assert(true);
 	}
 

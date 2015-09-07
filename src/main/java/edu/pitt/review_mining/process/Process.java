@@ -11,8 +11,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.StringTokenizer;
-
 import javax.net.ssl.HttpsURLConnection;
 
 import edu.pitt.review_mining.graph.Graph;
@@ -32,9 +30,9 @@ import edu.stanford.nlp.trees.GrammaticalStructure;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TypedDependency;
 
-public class Word {
+public class Process {
 
-	public Word() {
+	public Process() {
 	}
 
 	public String preprocessSentence(String sentence) {
@@ -64,12 +62,9 @@ public class Word {
 						continue;
 					}
 				}
-
 				sb.append(tagged_sent.get(i).word()).append(" ");
 			}
-
 		}
-
 		return sb.toString();
 	}
 
