@@ -6,9 +6,10 @@ import edu.pitt.review_mining.process.WordNet;
 
 public class WordNetTest {
 	@Test
-	public void testWordNet() {
+	public void testMeasureNounSimilarity() {
 		WordNet wn = new WordNet();
-		
+		int dist = wn.measureNounSimilarity("pizza", "topping");
+		System.out.println(dist);
 		assert(true);
 	}
 
