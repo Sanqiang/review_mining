@@ -1,0 +1,592 @@
+2015-09-09 16:30:04,262 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:30:04,375 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 16:30:04,377 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:30:18,034 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1 with queued 1
+
+2015-09-09 16:30:18,034 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 16:30:18,393 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 16:30:18,393 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 16:30:18,410 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 16:30:18,410 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 16:30:18,460 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 16:30:18,466 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 16:33:59,768 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path toc3f31b1d-f970-4dfd-8dbe-04486d2a4245
+
+2015-09-09 16:33:59,771 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:33:59,793 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 16:33:59,793 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:34:10,888 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1 with queued 1
+
+2015-09-09 16:34:10,888 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 16:34:11,072 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 16:34:11,073 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 16:34:11,073 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 16:34:11,073 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 16:34:11,098 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 16:34:11,102 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 16:40:54,076 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path toee8033a3-b98f-4788-af8c-405a836e04f5
+
+2015-09-09 16:40:54,079 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:40:54,101 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 16:40:54,102 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:41:05,211 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1 with queued 1
+
+2015-09-09 16:41:05,211 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 16:41:05,415 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 16:41:05,415 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 16:41:05,416 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 16:41:05,416 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 16:41:05,442 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 16:41:05,446 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 16:41:05,517 - [INFO] - from org.deeplearning4j.models.embeddings.loader.WordVectorSerializer in main
+				
+Wrote 2 with size of 300
+
+2015-09-09 16:41:20,740 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to0b27cf61-7602-40bc-bef3-af76e2fc8f49
+
+2015-09-09 16:41:20,743 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:41:20,765 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 16:41:20,765 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:41:31,949 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1 with queued 1
+
+2015-09-09 16:41:31,949 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 16:41:32,193 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 16:41:32,193 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 16:41:32,194 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 16:41:32,194 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 16:41:32,220 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 16:41:32,224 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 16:41:32,304 - [INFO] - from org.deeplearning4j.models.embeddings.loader.WordVectorSerializer in main
+				
+Wrote 2 with size of 300
+
+2015-09-09 16:51:15,401 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to6b1f60d3-73cb-447f-8168-d89ff6c745b9
+
+2015-09-09 16:51:15,410 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:51:15,500 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 16:51:15,501 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:51:29,197 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1 with queued 1
+
+2015-09-09 16:51:29,197 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 16:51:29,637 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 16:51:29,637 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 16:51:29,639 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 16:51:29,640 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 16:51:29,761 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 16:51:29,771 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 16:51:47,102 - [INFO] - from org.deeplearning4j.models.embeddings.loader.WordVectorSerializer in main
+				
+Wrote 2 with size of 300
+
+2015-09-09 16:55:20,470 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to56ad038c-080d-4f32-a2e8-eb6448fb624b
+
+2015-09-09 16:55:20,472 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:55:20,494 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 16:55:20,494 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:55:31,498 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1 with queued 1
+
+2015-09-09 16:55:31,498 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 16:55:31,656 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 16:55:31,656 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 16:55:31,656 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 16:55:31,656 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 16:55:31,682 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 16:55:31,687 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 16:55:31,762 - [INFO] - from org.deeplearning4j.models.embeddings.loader.WordVectorSerializer in main
+				
+Wrote 2 with size of 300
+
+2015-09-09 16:59:04,100 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path toa6b38f4b-1233-415b-bbd1-efb1ddc94df7
+
+2015-09-09 16:59:04,109 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:59:04,199 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 16:59:04,200 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 16:59:17,998 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1 with queued 1
+
+2015-09-09 16:59:17,998 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 16:59:18,502 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 16:59:18,502 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 16:59:18,504 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 16:59:18,505 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 16:59:18,617 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 16:59:18,626 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 17:00:08,000 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to84155652-5f8a-43a9-ae2f-3a33f42fe4f2
+
+2015-09-09 17:00:08,002 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 17:00:08,029 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-09 17:00:08,030 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-09 17:00:19,539 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+latch count 1001 with queued 1001
+
+2015-09-09 17:00:19,539 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-09 17:00:20,604 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-09 17:00:20,604 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-09 17:00:20,611 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-09 17:00:20,612 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-09 17:00:20,710 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-09 17:00:20,717 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Processing sentences...
+
+2015-09-09 17:02:47,306 - [INFO] - from org.deeplearning4j.models.embeddings.loader.WordVectorSerializer in main
+				
+Wrote 820 with size of 300
+
+2015-09-10 00:14:52,804 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to2344fcf0-f70c-401e-827b-eb2a3cca28b2
+
+2015-09-10 00:14:52,806 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:14:53,341 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-10 00:14:53,341 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:14:57,074 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-10 00:14:57,076 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-10 00:14:57,076 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-10 00:14:57,093 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-10 00:14:57,093 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-10 00:14:57,201 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-10 00:16:32,351 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to31280a6d-afb8-4b2a-86d0-e246d20952f7
+
+2015-09-10 00:16:32,353 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:16:32,374 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-10 00:16:32,375 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:16:33,394 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-10 00:16:33,396 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-10 00:16:33,396 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-10 00:16:33,396 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-10 00:16:33,396 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-10 00:16:33,414 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-10 00:17:01,426 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to0265e6a1-ab2a-4d9b-8294-219a3abbb500
+
+2015-09-10 00:17:01,429 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:17:01,449 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-10 00:17:01,450 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:17:02,399 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-10 00:17:02,400 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-10 00:17:02,400 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-10 00:17:02,401 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-10 00:17:02,401 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-10 00:17:02,418 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-10 00:19:50,769 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to1742f9c1-4b45-4249-9b44-543eceab0d46
+
+2015-09-10 00:19:50,771 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:19:50,792 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-10 00:19:50,792 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:19:51,845 - [INFO] - from org.deeplearning4j.bagofwords.vectorizer.BaseTextVectorizer in main
+				
+Invoking finish on index
+
+2015-09-10 00:19:51,850 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Building binary tree
+
+2015-09-10 00:19:51,851 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Constructing priority queue
+
+2015-09-10 00:19:51,851 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Built tree
+
+2015-09-10 00:19:51,851 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Resetting weights
+
+2015-09-10 00:19:51,876 - [INFO] - from org.deeplearning4j.models.word2vec.Word2Vec in main
+				
+Training word2vec multithreaded
+
+2015-09-10 00:34:51,211 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to92256bd1-2e00-4a61-8e1e-868d286c87b3
+
+2015-09-10 00:34:51,213 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:34:51,234 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-10 00:34:51,234 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:36:20,438 - [WARN] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Changing index path to788e6512-ab3d-4c09-b9b2-70d32727ae47
+
+2015-09-10 00:36:20,441 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+
+2015-09-10 00:36:20,462 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating new index writer
+
+2015-09-10 00:36:20,462 - [INFO] - from org.deeplearning4j.text.invertedindex.LuceneInvertedIndex in main
+				
+Creating directory word2vec-index
+

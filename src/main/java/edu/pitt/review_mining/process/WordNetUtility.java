@@ -13,9 +13,9 @@ import net.didion.jwnl.data.relationship.RelationshipFinder;
 import net.didion.jwnl.data.relationship.RelationshipList;
 import net.didion.jwnl.dictionary.Dictionary;
 
-public class WordNet {
+public class WordNetUtility {
 
-	public WordNet() {
+	public WordNetUtility() {
 		try {
 			JWNL.initialize(new FileInputStream("jwnl_property.xml"));
 		} catch (FileNotFoundException | JWNLException e) {

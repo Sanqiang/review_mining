@@ -4,7 +4,13 @@ import edu.stanford.nlp.parser.nndep.DependencyParser;
 
 public class Config {
 	// path
-	public final static String PATH_TEXT = "data\the-halal-guys-new-york-2_text.txt";
+	public final static String PATH_TEXT = "data/the-halal-guys-new-york-2_text.txt";
+	
+	//for word2vec
+	@Deprecated
+	public final static String PATH_AMAZON_REVIEW = "C:/Downloads/complete.json";
+	@Deprecated
+	public final static String PATH_WORD2VEC_MODEL = "w2v.model";
 
 	// tagger
 	public final static String PATH_TAGGER = "edu/stanford/nlp/models/pos-tagger/english-left3words/english-left3words-distsim.tagger";
