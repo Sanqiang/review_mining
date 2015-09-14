@@ -32,35 +32,49 @@ import edu.stanford.nlp.trees.TypedDependency;
 
 public class Process {
 
+	GloVe glove = null;
+
 	public Process() {
+		glove = new GloVe();
 	}
 
-	//CLI function
+	// CLI function
 	public void process(String sentence) {
 		sentence = preprocessSentence(sentence);
 		Tree tree = filterSentence(sentence);
 		ArrayList<Tree> trees = splitTree(tree);
-		for (int i = trees.size() - 1; i >=0; i--) {
+		for (int i = trees.size() - 1; i >= 0; i--) {
 			Tree child_tree = trees.get(i);
 			ArrayList<Node> candidates_nodes = extractCenterWords(Helper.mapTreeSentence(child_tree));
 			if (candidates_nodes.size() > 0) {
-				System.out.println(candidates_nodes.get(0).getLemma());
-				break;
+				for (Node node : candidates_nodes) {
+					String word = node.getLemma();
+					// get rid of phrase, focus on last noun of phrase
+					if (word.contains("_")) {
+						word = word.substring(word.lastIndexOf("_") + 1);
+					}
+					node.setScore(glove.sim(word, "restaurant"));
+				}
+				for (Node node : candidates_nodes) {
+					System.out.println(node.getLemma() + ":" + node.getScore());
+				}
 			}
 		}
-		
+
 	}
-	
-	//preprocess: tokenize by tagger / phrase detection by xx xx NOUN / xx NOUN with wikipedia
+
+	// preprocess: tokenize by tagger / phrase detection by xx xx NOUN / xx NOUN
+	// with wikipedia
 	public String preprocessSentence(String sentence) {
 		StringBuilder sb = new StringBuilder();
-		// format punctuation and phrase 
+		// format punctuation and phrase
 		MaxentTagger tagger = Module.getInst().getTagger();
 		List<List<HasWord>> sents = MaxentTagger.tokenizeText(new StringReader(sentence));
 		for (List<HasWord> sent : sents) {
 			List<TaggedWord> tagged_sent = tagger.tagSentence(sent);
 			for (int i = 0; i < tagged_sent.size(); i++) {
-				if (i + 2 < tagged_sent.size() && Helper.mapPartOfSpeech(tagged_sent.get(i+2).tag()) == PartOfSpeech.NOUN ) {
+				if (i + 2 < tagged_sent.size()
+						&& Helper.mapPartOfSpeech(tagged_sent.get(i + 2).tag()) == PartOfSpeech.NOUN) {
 					String trigram = String.join(" ", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word(),
 							tagged_sent.get(i + 2).word());
 					if (detectPhrase(trigram)) {
@@ -70,7 +84,8 @@ public class Process {
 						continue;
 					}
 				}
-				if (i + 1 < tagged_sent.size() && Helper.mapPartOfSpeech(tagged_sent.get(i+1).tag()) == PartOfSpeech.NOUN) {
+				if (i + 1 < tagged_sent.size()
+						&& Helper.mapPartOfSpeech(tagged_sent.get(i + 1).tag()) == PartOfSpeech.NOUN) {
 					String bigram = String.join(" ", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word());
 					if (detectPhrase(bigram)) {
 						sb.append(String.join("_", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word()))
@@ -85,7 +100,7 @@ public class Process {
 		return sb.toString();
 	}
 
-	//using wikipedia for phrase detect
+	// using wikipedia for phrase detect
 	public boolean detectPhrase(String phrase) {
 		phrase = phrase.replace(" ", "_");
 		String url = "https://en.wikipedia.org/wiki/" + phrase;
@@ -126,7 +141,7 @@ public class Process {
 		return tree;
 	}
 
-	//one-layer split tree
+	// one-layer split tree
 	public ArrayList<Tree> splitTree(Tree tree) {
 		ArrayList<Tree> trees = new ArrayList<>();
 		boolean is_simple_sent = true;
@@ -143,7 +158,7 @@ public class Process {
 		return trees;
 	}
 
-	//extract center words by largest number of dependency relation
+	// extract center words by largest number of dependency relation
 	public ArrayList<Node> extractCenterWords(String clause) {
 		Graph graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();

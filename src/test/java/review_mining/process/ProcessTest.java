@@ -12,15 +12,14 @@ public class ProcessTest {
 	@Test
 	public void testProcess(){
 		Process word = new Process();
-		word.process("came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner.");
+		word.process("CA$H ONLY!!! Wait in line, pick what you want, pay the man, and eat to your heart's desire. This easily counts as two meals which is such a steal. Not to mention it is very yummy whether you are super hungry or not. The combo meal of chicken, lamb, rice, and veggies may not be the most photogenic for Instagram, but it definitely fits the bill to be the winner of a superlative named Super Cheap & Extra Good.");
 		assert(true);
 	}
 	
 	//@Test
 	public void testPreprocessSentence() {
 		Process word = new Process();
-		String sent =  word.preprocessSentence("came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner.");
-		System.out.println(sent);
+		System.out.println(word.preprocessSentence("came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner."));
 		assert(true);
 	}
 	

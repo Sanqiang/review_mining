@@ -10,6 +10,7 @@ public class Node {
 	private String _lemma;
 	ArrayList<Edge> _incoming_edges;
 	ArrayList<Edge> _outcoming_edges;
+	private double _score = 0d;
 	// optional
 	private int _loc_sent;
 	private int _idx_sent;
@@ -31,23 +32,31 @@ public class Node {
 	}
 
 	public String getIdentify() {
-		return String.join("_", _lemma,_pos.name(), String.valueOf(_loc_sent));
+		return String.join("_", _lemma, _pos.name(), String.valueOf(_loc_sent));
 	}
-	
+
 	public PartOfSpeech getPOS() {
 		return _pos;
 	}
-	
+
 	public String getLemma() {
 		return _lemma;
 	}
-	
+
 	public ArrayList<Edge> getIncomingEdges() {
 		return _incoming_edges;
 	}
-	
+
 	public ArrayList<Edge> getOutcomingEdges() {
 		return _outcoming_edges;
+	}
+
+	public void setScore(double score) {
+		this._score = score;
+	}
+
+	public double getScore() {
+		return this._score;
 	}
 
 	// gov -> dep
