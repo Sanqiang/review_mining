@@ -9,7 +9,7 @@ import edu.stanford.nlp.trees.Tree;
 
 public class ProcessTest {
 
-	@Test
+	//@Test
 	public void testSegSentence() {
 		Process process = new Process();
 		ArrayList<String> sents = process.segSentence("CA$H ONLY!!! Wait in line, pick what you want, pay the man, and eat to your heart's desire. This easily counts as two meals which is such a steal. Not to mention it is very yummy whether you are super hungry or not. The combo meal of chicken, lamb, rice, and veggies may not be the most photogenic for Instagram, but it definitely fits the bill to be the winner of a superlative named Super Cheap & Extra Good.");
@@ -34,10 +34,10 @@ public class ProcessTest {
 		assert(true);
 	}
 
-	// @Test
+	 @Test
 	public void testDetectPhrase() {
 		Process word = new Process();
-		boolean is_phrase = word.detectPhrase("big bang");
+		boolean is_phrase = word.detectPhrase("new york pizza");
 		System.out.println(is_phrase);
 		assert(true);
 	}
@@ -67,7 +67,7 @@ public class ProcessTest {
 
 	// @Test
 	public void testProcessClause() {
-		new Process().extractCenterWords("red red sauce is pretty good, but I like white meat");
+		new Process().generateDependencyGraph("red red sauce is pretty good, but I like white meat");
 		assert(true);
 	}
 

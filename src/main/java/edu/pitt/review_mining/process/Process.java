@@ -39,16 +39,6 @@ public class Process {
 		glove = new GloVe();
 	}
 
-	public ArrayList<String> segSentence(String paragraph) {
-		ArrayList<String> sentences = new ArrayList<>();
-		DocumentPreprocessor dp = new DocumentPreprocessor(new StringReader(paragraph));
-		for (List<HasWord> sentence : dp) {
-			   String sentenceString = Sentence.listToString(sentence);
-			   sentences.add(sentenceString.toString());
-			}
-		return sentences;
-	}
-
 	// CLI function
 	public void process(String sentence) {
 		sentence = preprocessSentence(sentence);
@@ -56,22 +46,22 @@ public class Process {
 		ArrayList<Tree> trees = splitTree(tree);
 		for (int i = trees.size() - 1; i >= 0; i--) {
 			Tree child_tree = trees.get(i);
-			ArrayList<Node> candidates_nodes = extractCenterWords(Helper.mapTreeSentence(child_tree));
-			if (candidates_nodes.size() > 0) {
-				for (Node node : candidates_nodes) {
-					String word = node.getLemma();
-					// get rid of phrase, focus on last noun of phrase
-					if (word.contains("_")) {
-						word = word.substring(word.lastIndexOf("_") + 1);
-					}
-					node.setScore(glove.sim(word, "restaurant"));
-				}
-				for (Node node : candidates_nodes) {
-					System.out.println(node.getLemma() + ":" + node.getScore());
-				}
+			ArrayList<Node> candidates_nodes = getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(child_tree));
+			for (Node node : candidates_nodes) {
+				System.out.println(node.getLemma() + ":" + node.getScore());
 			}
 		}
 
+	}
+
+	public ArrayList<String> segSentence(String paragraph) {
+		ArrayList<String> sentences = new ArrayList<>();
+		DocumentPreprocessor dp = new DocumentPreprocessor(new StringReader(paragraph));
+		for (List<HasWord> sentence : dp) {
+			String sentenceString = Sentence.listToString(sentence);
+			sentences.add(sentenceString.toString());
+		}
+		return sentences;
 	}
 
 	// preprocess: tokenize by tagger / phrase detection by xx xx NOUN / xx NOUN
@@ -84,6 +74,7 @@ public class Process {
 		for (List<HasWord> sent : sents) {
 			List<TaggedWord> tagged_sent = tagger.tagSentence(sent);
 			for (int i = 0; i < tagged_sent.size(); i++) {
+				// detect xx NOUN phrase
 				if (i + 2 < tagged_sent.size()
 						&& Helper.mapPartOfSpeech(tagged_sent.get(i + 2).tag()) == PartOfSpeech.NOUN) {
 					String trigram = String.join(" ", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word(),
@@ -95,6 +86,7 @@ public class Process {
 						continue;
 					}
 				}
+				// detect xx xx NOUN phrase
 				if (i + 1 < tagged_sent.size()
 						&& Helper.mapPartOfSpeech(tagged_sent.get(i + 1).tag()) == PartOfSpeech.NOUN) {
 					String bigram = String.join(" ", tagged_sent.get(i).word(), tagged_sent.get(i + 1).word());
@@ -113,13 +105,24 @@ public class Process {
 
 	// using wikipedia for phrase detect
 	public boolean detectPhrase(String phrase) {
+		return detectPhrase(phrase, false);
+	}
+
+	// using wikipedia for phrase detect
+	public boolean detectPhrase(String phrase, boolean allow_wiki_redirect) {
 		phrase = phrase.replace(" ", "_");
 		String url = "https://en.wikipedia.org/wiki/" + phrase;
 		try {
 			URL obj = new URL(url);
 			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
+			con.setInstanceFollowRedirects(false);
 			con.setRequestMethod("GET");
 			con.getInputStream();
+			// wiki will redirect the page: sample is
+			// https://en.wikipedia.org/wiki/new_york_pizza
+			if (!allow_wiki_redirect && con.getResponseCode() == 301) {
+				return false;
+			}
 		} catch (FileNotFoundException e) {
 			return false;
 		} catch (IOException e) {
@@ -128,6 +131,7 @@ public class Process {
 		return true;
 	}
 
+	// filter out unimportant (Config.TAGS_FILTER_OUT) CFG parts
 	public Tree filterSentence(String sentence) {
 		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
 		Tree tree = lp.parse(sentence);
@@ -169,15 +173,16 @@ public class Process {
 		return trees;
 	}
 
-	// extract center words by largest number of dependency relation
-	public ArrayList<Node> extractCenterWords(String clause) {
+	// generate graph of dependency relation
+	public Graph generateDependencyGraph(String clause) {
 		Graph graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
 		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
 		System.out.println("Parsing : " + clause);
-		for (List<HasWord> sentence : tokenizer) {
-			List<TaggedWord> tagged = tagger.tagSentence(sentence);
+		// build up the graph, informed with POS tag and dependency relationship
+		for (List<HasWord> token_part : tokenizer) {
+			List<TaggedWord> tagged = tagger.tagSentence(token_part);
 			GrammaticalStructure gs = parser.predict(tagged);
 
 			for (TypedDependency typed_dependence : gs.allTypedDependencies()) {
@@ -202,16 +207,41 @@ public class Process {
 			}
 		}
 
-		// find center aspect word
-		ArrayList<Node> candidates_nodes = getCenterWordCandidates(graph);
-		for (Node node : candidates_nodes) {
-			System.out.println("Center word is: " + node.getLemma() + ", InComing: " + node.getIncomingEdges().size()
-					+ " OutComing: " + node.getOutcomingEdges().size());
+		return graph;
+	}
+
+	public ArrayList<Node> getCenterWordCandidatesFromSimMeasure(String clause, String target_word) {
+		ArrayList<Node> candidates_nodes = new ArrayList<>();
+		MaxentTagger tagger = Module.getInst().getTagger();
+		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
+		System.out.println("Parsing : " + clause);
+		for (List<HasWord> token_part : tokenizer) {
+			List<TaggedWord> tagged = tagger.tagSentence(token_part);
+			for (TaggedWord taggedWord : tagged) {
+				if (Helper.mapPartOfSpeech(taggedWord.tag()) == PartOfSpeech.NOUN) {
+					String word = taggedWord.word();
+					Node node = new Node(PartOfSpeech.NOUN, word);
+					if (word.contains("_")) {
+						word = word.substring(word.lastIndexOf("_") + 1);
+					}
+					node.setScore(glove.sim(word, target_word));
+				}
+			}
 		}
+		Collections.sort(candidates_nodes, new Comparator<Node>() {
+			@Override
+			public int compare(Node o1, Node o2) {
+				return (int) (o2.getScore() - o1.getScore());
+			}
+		});
 		return candidates_nodes;
 	}
 
-	public ArrayList<Node> getCenterWordCandidates(Graph graph) {
+	public ArrayList<Node> getCenterWordCandidatesFromGraph(String clause) {
+		return getCenterWordCandidatesFromGraph(generateDependencyGraph(clause));
+	}
+
+	public ArrayList<Node> getCenterWordCandidatesFromGraph(Graph graph) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		Collection<Node> nodes = graph.getNodes();
 		for (Node node : nodes) {
