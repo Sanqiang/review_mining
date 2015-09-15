@@ -21,6 +21,7 @@ import edu.pitt.review_mining.utility.Helper;
 import edu.pitt.review_mining.utility.Module;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 import edu.stanford.nlp.ling.HasWord;
+import edu.stanford.nlp.ling.Sentence;
 import edu.stanford.nlp.ling.TaggedWord;
 import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.parser.nndep.DependencyParser;
@@ -36,6 +37,16 @@ public class Process {
 
 	public Process() {
 		glove = new GloVe();
+	}
+
+	public ArrayList<String> segSentence(String paragraph) {
+		ArrayList<String> sentences = new ArrayList<>();
+		DocumentPreprocessor dp = new DocumentPreprocessor(new StringReader(paragraph));
+		for (List<HasWord> sentence : dp) {
+			   String sentenceString = Sentence.listToString(sentence);
+			   sentences.add(sentenceString.toString());
+			}
+		return sentences;
 	}
 
 	// CLI function
