@@ -20,13 +20,22 @@ public class ProcessTest {
 		Collections.sort(candidates_nodes, new Comparator<Node>() {
 			@Override
 			public int compare(Node o1, Node o2) {
-				return (int) (100000*(o2.getScore() - o1.getScore()));
+				o1.setScore(Double.isNaN(o1.getScore()) ? 0 : o1.getScore());
+				o2.setScore(Double.isNaN(o2.getScore()) ? 0 : o2.getScore());
+				if (o2.getScore() >= o1.getScore()) {
+					return 1;
+				} else {
+					return -1;
+				}
 			}
 		});
-		for (Node node : candidates_nodes) {
+		for (Node node : candidates_nodes)
+
+		{
 			System.out.println(node.getLemma() + " : " + node.getScore());
 		}
 		assert(true);
+
 	}
 
 	// @Test
