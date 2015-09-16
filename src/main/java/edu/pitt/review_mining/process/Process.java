@@ -8,8 +8,6 @@ import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -42,17 +40,33 @@ public class Process {
 	}
 
 	// CLI function
-	public void process(String sentence) {
+	public ArrayList<Node> processReviews(String review) {
+		ArrayList<Node> candidates_nodes = new ArrayList<>();
+		String[] paragraphs = review.split("\n");
+		for (String paragraph : paragraphs) {
+			if (paragraph.length() > 0) {
+				ArrayList<String> sentences = segSentence(paragraph);
+				for (String sentence : sentences) {
+					candidates_nodes.addAll(processSentence(sentence));
+				}
+			}
+		}
+		return candidates_nodes;
+	}
+
+	// process the sentence CLI
+	public ArrayList<Node> processSentence(String sentence) {
+		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		sentence = preprocessSentence(sentence);
 		Tree tree = filterSentence(sentence);
 		ArrayList<Tree> trees = splitTree(tree);
 		for (int i = trees.size() - 1; i >= 0; i--) {
 			Tree child_tree = trees.get(i);
-			ArrayList<Node> candidates_nodes = getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(child_tree));
-			for (Node node : candidates_nodes) {
-				System.out.println(node.getLemma() + ":" + node.getScore());
-			}
+			//ArrayList<Node> candidates_temp_nodes =getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(child_tree));
+			ArrayList<Node> candidates_temp_nodes =getCenterWordCandidatesFromSimMeasure(Helper.mapTreeSentence(child_tree), "restaurant");
+			candidates_nodes.addAll(candidates_temp_nodes);
 		}
+		return candidates_nodes;
 	}
 
 	public ArrayList<String> segSentence(String paragraph) {
@@ -247,15 +261,17 @@ public class Process {
 						word = word.substring(word.lastIndexOf("_") + 1);
 					}
 					node.setScore(glove.sim(word, target_word));
+					candidates_nodes.add(node);
 				}
 			}
 		}
-		Collections.sort(candidates_nodes, new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				return (int) (o2.getScore() - o1.getScore());
-			}
-		});
+		// sort finally instead
+		// Collections.sort(candidates_nodes, new Comparator<Node>() {
+		// @Override
+		// public int compare(Node o1, Node o2) {
+		// return (int) (o2.getScore() - o1.getScore());
+		// }
+		// });
 		return candidates_nodes;
 	}
 
@@ -268,16 +284,18 @@ public class Process {
 		Collection<Node> nodes = graph.getNodes();
 		for (Node node : nodes) {
 			if (node.getPOS() == PartOfSpeech.NOUN) {
+				node.setScore((node.getIncomingEdges().size() + node.getOutcomingEdges().size()));
 				candidates_nodes.add(node);
 			}
 		}
-		Collections.sort(candidates_nodes, new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				return (o2.getIncomingEdges().size() + o2.getOutcomingEdges().size())
-						- (o1.getIncomingEdges().size() + o1.getOutcomingEdges().size());
-			}
-		});
+		// sort finally instead
+		// Collections.sort(candidates_nodes, new Comparator<Node>() {
+		// @Override
+		// public int compare(Node o1, Node o2) {
+		// return (o2.getIncomingEdges().size() + o2.getOutcomingEdges().size())
+		// - (o1.getIncomingEdges().size() + o1.getOutcomingEdges().size());
+		// }
+		// });
 		return candidates_nodes;
 	}
 }
