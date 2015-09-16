@@ -1,7 +1,9 @@
 package edu.pitt.review_mining.process;
 
+import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
@@ -51,7 +53,6 @@ public class Process {
 				System.out.println(node.getLemma() + ":" + node.getScore());
 			}
 		}
-
 	}
 
 	public ArrayList<String> segSentence(String paragraph) {
@@ -105,30 +106,51 @@ public class Process {
 
 	// using wikipedia for phrase detect
 	public boolean detectPhrase(String phrase) {
-		return detectPhrase(phrase, false);
+		return detectPhrase(phrase, false, true);
 	}
 
 	// using wikipedia for phrase detect
-	public boolean detectPhrase(String phrase, boolean allow_wiki_redirect) {
-		phrase = phrase.replace(" ", "_");
-		String url = "https://en.wikipedia.org/wiki/" + phrase;
+	public boolean detectPhrase(String phrase, boolean allow_wiki_redirect, boolean allow_transfor_lowercase) {
+		String url = "https://en.wikipedia.org/wiki/" + phrase.replace(" ", "_");
 		try {
 			URL obj = new URL(url);
 			HttpsURLConnection con = (HttpsURLConnection) obj.openConnection();
-			con.setInstanceFollowRedirects(false);
+			con.setInstanceFollowRedirects(true);
 			con.setRequestMethod("GET");
-			con.getInputStream();
+			// if there is no such word, (no redirect) throw
+			// FileNotFoundException
+			BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
 			// wiki will redirect the page: sample is
 			// https://en.wikipedia.org/wiki/new_york_pizza
-			if (!allow_wiki_redirect && con.getResponseCode() == 301) {
-				return false;
+			// if we not allow wiki redirect, we need to check whether redirect
+			// happens for lower case or not
+			if (allow_wiki_redirect) {
+				return true;
+			} else if (!allow_wiki_redirect && allow_transfor_lowercase) {
+				String line = "";
+				while ((line = in.readLine()) != null) {
+					// access to <title> line
+					if (line.indexOf("<title>") == 0) {
+						String title = line.substring(line.indexOf("<title>") + 7, line.indexOf(" - Wikipedia"));
+						if (allow_transfor_lowercase) {
+							title = title.toLowerCase();
+							phrase = phrase.toLowerCase();
+						}
+						if (title.equals(phrase)) {
+							return true;
+						} else {
+							return false;
+						}
+					}
+				}
 			}
+
 		} catch (FileNotFoundException e) {
 			return false;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		return true;
+		return false;
 	}
 
 	// filter out unimportant (Config.TAGS_FILTER_OUT) CFG parts

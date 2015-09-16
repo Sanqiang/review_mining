@@ -9,15 +9,16 @@ import edu.stanford.nlp.trees.Tree;
 
 public class ProcessTest {
 
-	//@Test
+	// @Test
 	public void testSegSentence() {
 		Process process = new Process();
-		ArrayList<String> sents = process.segSentence("CA$H ONLY!!! Wait in line, pick what you want, pay the man, and eat to your heart's desire. This easily counts as two meals which is such a steal. Not to mention it is very yummy whether you are super hungry or not. The combo meal of chicken, lamb, rice, and veggies may not be the most photogenic for Instagram, but it definitely fits the bill to be the winner of a superlative named Super Cheap & Extra Good.");
+		ArrayList<String> sents = process.segSentence(
+				"CA$H ONLY!!! Wait in line, pick what you want, pay the man, and eat to your heart's desire. This easily counts as two meals which is such a steal. Not to mention it is very yummy whether you are super hungry or not. The combo meal of chicken, lamb, rice, and veggies may not be the most photogenic for Instagram, but it definitely fits the bill to be the winner of a superlative named Super Cheap & Extra Good.");
 		for (String sent : sents) {
 			System.out.println(sent);
 		}
 	}
-	
+
 	// @Test
 	public void testProcess() {
 		Process word = new Process();
@@ -29,16 +30,16 @@ public class ProcessTest {
 	// @Test
 	public void testPreprocessSentence() {
 		Process word = new Process();
-		System.out.println(word.preprocessSentence(
-				"came here after a club bc more than one person recommended, I get chicken and rice from this infamous corner."));
+		System.out.println(word.preprocessSentence("i like blue cheese."));
 		assert(true);
 	}
 
-	 @Test
+	@Test
 	public void testDetectPhrase() {
 		Process word = new Process();
-		boolean is_phrase = word.detectPhrase("new york pizza");
-		System.out.println(is_phrase);
+		System.out.println(word.detectPhrase("new york pizza", false, true));
+		System.out.println(word.detectPhrase("blue cheese", false, true));
+		System.out.println(word.detectPhrase("Blue cheese", false, false));
 		assert(true);
 	}
 
