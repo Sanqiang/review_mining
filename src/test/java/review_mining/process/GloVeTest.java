@@ -27,8 +27,8 @@ public class GloVeTest {
 	@Test
 	public void testSim() {
 		GloVe gv = new GloVe();
-		System.out.println(gv.sim("meat", "restaurant"));
-		System.out.println(gv.sim("sauce", "restaurant"));
+		System.out.println(gv.sim("food", "smell"));
+		System.out.println(gv.sim("food", "car"));
 		System.out.println(gv.sim("pizza", "time"));
 		System.out.println(gv.sim("sauce", "restaurant"));
 		System.out.println(gv.sim("meatball", "pizza"));

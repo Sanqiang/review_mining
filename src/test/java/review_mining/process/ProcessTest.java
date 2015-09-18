@@ -12,9 +12,9 @@ import edu.stanford.nlp.trees.Tree;
 
 public class ProcessTest {
 
-	@Test
+	//@Test
 	public void testProcessReview() {
-		String review = "On my way to Pittsburgh one of the places that I was really looking forward to was Gaucho. We came here on a Saturday, standing in the line with a 12 pack as the smell of their wood fired grill was taking over the whole street. Apparently there is always a line here. We waited for 45 minutes (and yes it is worth it). As I was standing in the line, I couldn't help myself not hearing how locals exalt this place. I ordered their filet sandwich and the rosemary braised beef sandwich (for to go). The winner was the filet, but with a small difference. The first bite that I took from my filet sandwich, was overwhelmingly tasty. The meat was cooked to perfection, and the roasted peppers in the sandwich had this unbelievable smoky flavor which added a lot to the sandwich. The sandwiches here are served on ciabatta which makes them even more delicious. ";
+		String review = "This restaurant deserves all the success and lines out its door. One walks in and is instantly greeted by a giant chalkboard of food items listed divided into  to meats, salads, sandwiches, and sides. I decisively decided on their steak sandwich with filet and then a 6oz meat plate of flank (and it comes with a small side salad, toast, and tiny portion of grilled veggies). Depending on the cuts of meat prices vary. Strip steak is the cheapest to filet being the priciest. Ordered both meats to be cooked medium rare. ";
 		Process process = new Process();
 		ArrayList<Node> candidates_nodes = process.processReviews(review);
 		Collections.sort(candidates_nodes, new Comparator<Node>() {
@@ -95,8 +95,8 @@ public class ProcessTest {
 		assert(true);
 	}
 
-	// @Test
-	public void testProcessClause() {
+	@Test
+	public void testGenerateDependencyGraph() {
 		new Process().generateDependencyGraph("red red sauce is pretty good, but I like white meat");
 		assert(true);
 	}

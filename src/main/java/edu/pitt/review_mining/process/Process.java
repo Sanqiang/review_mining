@@ -27,6 +27,7 @@ import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.parser.nndep.DependencyParser;
 import edu.stanford.nlp.process.DocumentPreprocessor;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
+import edu.stanford.nlp.trees.GrammaticalRelation;
 import edu.stanford.nlp.trees.GrammaticalStructure;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TypedDependency;
@@ -57,15 +58,24 @@ public class Process {
 	// process the sentence CLI
 	public ArrayList<Node> processSentence(String sentence) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
-		sentence = preprocessSentence(sentence);
+		// does detect phrase for now, use dependency parser of compound
+		// relationship
+		// sentence = preprocessSentence(sentence);
 		Tree tree = filterSentence(sentence);
-		ArrayList<Tree> trees = splitTree(tree);
-		for (int i = trees.size() - 1; i >= 0; i--) {
-			Tree child_tree = trees.get(i);
-			//ArrayList<Node> candidates_temp_nodes =getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(child_tree));
-			ArrayList<Node> candidates_temp_nodes =getCenterWordCandidatesFromSimMeasure(Helper.mapTreeSentence(child_tree), "restaurant");
-			candidates_nodes.addAll(candidates_temp_nodes);
-		}
+		// split tree break dependency parser so deprecated
+		// ArrayList<Tree> trees = splitTree(tree);
+		// for (int i = trees.size() - 1; i >= 0; i--) {
+		// Tree child_tree = trees.get(i);
+		// // ArrayList<Node> candidates_temp_nodes
+		// //
+		// =getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(child_tree));
+		// ArrayList<Node> candidates_temp_nodes =
+		// getCenterWordCandidatesFromSimMeasure(
+		// Helper.mapTreeSentence(child_tree), "food");
+		// candidates_nodes.addAll(candidates_temp_nodes);
+		// }
+		//so instead use 
+		candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
 		return candidates_nodes;
 	}
 
@@ -81,6 +91,7 @@ public class Process {
 
 	// preprocess: tokenize by tagger / phrase detection by xx xx NOUN / xx NOUN
 	// with wikipedia
+	@Deprecated
 	public String preprocessSentence(String sentence) {
 		StringBuilder sb = new StringBuilder();
 		// format punctuation and phrase
@@ -158,7 +169,6 @@ public class Process {
 					}
 				}
 			}
-
 		} catch (FileNotFoundException e) {
 			return false;
 		} catch (IOException e) {
@@ -193,6 +203,7 @@ public class Process {
 	}
 
 	// one-layer split tree
+	@Deprecated
 	public ArrayList<Tree> splitTree(Tree tree) {
 		ArrayList<Tree> trees = new ArrayList<>();
 		boolean is_simple_sent = true;
@@ -220,7 +231,9 @@ public class Process {
 		for (List<HasWord> token_part : tokenizer) {
 			List<TaggedWord> tagged = tagger.tagSentence(token_part);
 			GrammaticalStructure gs = parser.predict(tagged);
+			GrammaticalRelation rel =gs.getGrammaticalRelation(0, 1);
 
+			
 			for (TypedDependency typed_dependence : gs.allTypedDependencies()) {
 				int idx_gov = typed_dependence.gov().index() - 1;
 				int idx_dep = typed_dependence.dep().index() - 1;
