@@ -26,6 +26,10 @@ public class Edge {
 	// ++this._count;
 	// }
 
+	public DependencyType getDependencyType() {
+		return _type;
+	}
+	
 	public int getCount() {
 		int count = 0;
 		for (HashSet<Integer> sentence_occur_set : this._occurs.values()) {

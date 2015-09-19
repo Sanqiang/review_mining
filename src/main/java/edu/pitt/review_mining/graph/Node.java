@@ -22,14 +22,14 @@ public class Node {
 		this._outcoming_edges = new ArrayList<>();
 	}
 
-//	public Node(PartOfSpeech pos, String lemma, int loc_sent, int idx_sent) {
-//		this._pos = pos;
-//		this._lemma = lemma;
-//		this._incoming_edges = new ArrayList<>();
-//		this._outcoming_edges = new ArrayList<>();
-//		this._loc_sent = loc_sent;
-//		this._idx_sent = idx_sent;
-//	}
+	public Node(PartOfSpeech pos, String lemma, int loc_sent, int idx_sent) {
+		this._pos = pos;
+		this._lemma = lemma;
+		this._incoming_edges = new ArrayList<>();
+		this._outcoming_edges = new ArrayList<>();
+		this._loc_sent = loc_sent;
+		this._idx_sent = idx_sent;
+	}
 	
 	public void incrementCount() {
 		++this._count;
@@ -67,6 +67,14 @@ public class Node {
 		return this._score;
 	}
 
+	public int getSentenceIdx(){
+		return _idx_sent;
+	}
+	
+	public int getSentenceLoc() {
+		return _loc_sent;
+	}
+	
 	// gov -> dep
 	@Deprecated
 	public Edge addEdge(Node node, DependencyType type, boolean is_self_gov) {

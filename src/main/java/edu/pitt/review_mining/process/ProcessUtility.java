@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Queue;
 import javax.net.ssl.HttpsURLConnection;
 
+import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.utility.Config;
@@ -120,7 +121,7 @@ public class ProcessUtility {
 
 	// generate graph of dependency relation
 	public Graph generateDependencyGraph(String clause, int review_id) {
-
+		Graph local_graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
 		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
@@ -143,11 +144,66 @@ public class ProcessUtility {
 
 				String lemma_gov = typed_dependence.gov().value();
 				String lemma_dep = typed_dependence.dep().value();
-				Node gov = _graph.createNode(pos_gov, lemma_gov);
-				Node dep = _graph.createNode(pos_dep, lemma_dep);
+				Node gov = local_graph.createNode(pos_gov, lemma_gov, review_id, idx_gov);
+				Node dep = local_graph.createNode(pos_dep, lemma_dep, review_id, idx_dep);
 
 				DependencyType dependency_type = Helper.mapRelationTypes(typed_dependence.reln().getShortName());
-				_graph.createEdge(gov, dep, dependency_type, review_id, idx_gov);
+				local_graph.createEdge(gov, dep, dependency_type, review_id, idx_gov);
+			}
+		}
+
+		// refine rule
+		for (Node node : local_graph.getNodes()) {
+			if (node.getPOS() == PartOfSpeech.NOUN) {
+				// for out coming edges
+				for (Edge edge : node.getOutcomingEdges()) {
+					Node another_node = edge.getOtherNode(node);
+					// DependencyType.SingleAmod : red food is good.
+					if (edge.getDependencyType() == DependencyType.AdjectivalModifier
+							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						Node node_global = this._graph.createNode(node);
+						Node another_node_global = this._graph.createNode(another_node);
+						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleAmod, review_id,
+								node.getSentenceLoc());
+					}
+					
+					// DependencyType.ConjAndComp : The chicken and rice with white sauce is delicious. chicken rice is delicious.
+					if (edge.getDependencyType() == DependencyType.NounCompoundModifier
+							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						Node node_global = this._graph.createNode(node);
+						Node another_node_global = this._graph.createNode(another_node);
+						this._graph.createEdge(node_global, another_node_global, DependencyType.ConjAndComp, review_id,
+								node.getSentenceLoc());
+					}
+				}
+
+				// for in coming edges
+				for (Edge edge : node.getIncomingEdges()) {
+					Node another_node = edge.getOtherNode(node);
+					// DependencyType.AmodSubj chicken is delicious food.
+					if (edge.getDependencyType() == DependencyType.NominalSubject
+							&& another_node.getPOS() == PartOfSpeech.NOUN) {
+						for (Edge edge2 : another_node.getOutcomingEdges()) {
+							Node another_node2 = edge2.getOtherNode(another_node);
+							if (edge.getDependencyType() == DependencyType.AdjectivalModifier
+									&& another_node2.getPOS() == PartOfSpeech.ADJECTIVE) {
+								Node node_global = this._graph.createNode(node);
+								Node another_node_global = this._graph.createNode(another_node2);
+								this._graph.createEdge(node_global, another_node_global, DependencyType.AmodSubj,
+										review_id, node.getSentenceLoc());
+							}
+						}
+					}
+
+					// DependencyType.SingleSubj food is delicious.
+					if (edge.getDependencyType() == DependencyType.NominalSubject
+							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						Node node_global = this._graph.createNode(node);
+						Node another_node_global = this._graph.createNode(another_node);
+						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleSubj, review_id,
+								node.getSentenceLoc());
+					}
+				}
 			}
 		}
 

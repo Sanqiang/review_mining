@@ -6,14 +6,14 @@ import edu.stanford.nlp.trees.LabeledScoredTreeNode;
 import edu.stanford.nlp.trees.Tree;
 
 public class Helper {
-	public static PartOfSpeech mapPartOfSpeech(String postag){
-		PartOfSpeech partOfSpeech=PartOfSpeech.OTHER;
+	public static PartOfSpeech mapPartOfSpeech(String postag) {
+		PartOfSpeech partOfSpeech = PartOfSpeech.OTHER;
 		switch (postag) {
 		case "NN":
 		case "NNS":
 		case "NNP":
 		case "NNPS":
-			partOfSpeech=PartOfSpeech.NOUN;
+			partOfSpeech = PartOfSpeech.NOUN;
 			break;
 		case "VB":
 		case "VBD":
@@ -21,54 +21,52 @@ public class Helper {
 		case "VBN":
 		case "VBP":
 		case "VBZ":
-			partOfSpeech=PartOfSpeech.VERB;
+			partOfSpeech = PartOfSpeech.VERB;
 			break;
 		case "JJ":
 		case "JJR":
 		case "JJS":
-			partOfSpeech=PartOfSpeech.ADJECTIVE;
+			partOfSpeech = PartOfSpeech.ADJECTIVE;
 			break;
 		case "RB":
 		case "RBR":
 		case "RBS":
-			partOfSpeech=PartOfSpeech.ADVERB;
+			partOfSpeech = PartOfSpeech.ADVERB;
 			break;
 		default:
-			partOfSpeech=PartOfSpeech.OTHER;
+			partOfSpeech = PartOfSpeech.OTHER;
 			break;
 		}
 		return partOfSpeech;
 	}
-	
-	public static DependencyType mapRelationTypes(String dependencyShortName){
-		DependencyType mappedRelType=DependencyType.OTHER;
+
+	public static DependencyType mapRelationTypes(String dependencyShortName) {
+		DependencyType mappedRelType = DependencyType.OtherLocalType;
 		switch (dependencyShortName) {
 		case "amod":
-			mappedRelType= DependencyType.AdjectivalModifier;
+			mappedRelType = DependencyType.AdjectivalModifier;
 			break;
+		case "conj:and":
+		case "compound":
 		case "nn":
-			mappedRelType= DependencyType.NominalSubject;
+			mappedRelType = DependencyType.NounCompoundModifier;
 			break;
 		case "nsubj":
-			mappedRelType= DependencyType.NominalSubject;
+			mappedRelType = DependencyType.NominalSubject;
 			break;
 		case "dobj":
-			mappedRelType= DependencyType.DirectObject;
+			mappedRelType = DependencyType.DirectObject;
 			break;
 		case "conj":
-			mappedRelType= DependencyType.Conjunction;
-			break;
-		case "compound":
-			mappedRelType = DependencyType.Compound;
+			mappedRelType = DependencyType.Conjunction;
 			break;
 		default:
-			mappedRelType=DependencyType.OTHER;
+			mappedRelType = DependencyType.OtherLocalType;
 			break;
 		}
 		return mappedRelType;
 	}
-	
-	
+
 	public static boolean isInArray(String target, String[] arr) {
 		boolean is_in_array = false;
 		for (String item : arr) {

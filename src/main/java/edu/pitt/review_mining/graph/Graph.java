@@ -23,8 +23,21 @@ public class Graph {
 		return _nodes.values();
 	}
 
+	public Node createNode(PartOfSpeech pos, String lemma, int review_id, int review_loc) {
+		Node n = new Node(pos, lemma, review_id, review_loc);
+		if (_nodes.containsKey(n.getIdentify())) {
+			return _nodes.get(n.getIdentify());
+		} else {
+			_nodes.put(n.getIdentify(), n);
+			return n;
+		}
+	}
+
 	public Node createNode(PartOfSpeech pos, String lemma) {
-		Node n = new Node(pos, lemma);
+		return createNode(pos, lemma, 0, 0);
+	}
+
+	public Node createNode(Node n) {
 		if (_nodes.containsKey(n.getIdentify())) {
 			return _nodes.get(n.getIdentify());
 		} else {
@@ -37,7 +50,7 @@ public class Graph {
 		Edge e = new Edge(gov, dep, type);
 		if (_edges.containsKey(e.getIdentify())) {
 			e = _edges.get(e.getIdentify());
-			e.incrementCount(sentence_idx,word_idx);
+			e.incrementCount(sentence_idx, word_idx);
 			return e;
 		} else {
 			gov._outcoming_edges.add(e);
