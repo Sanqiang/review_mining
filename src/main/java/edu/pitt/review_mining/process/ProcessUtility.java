@@ -27,28 +27,33 @@ import edu.stanford.nlp.parser.lexparser.LexicalizedParser;
 import edu.stanford.nlp.parser.nndep.DependencyParser;
 import edu.stanford.nlp.process.DocumentPreprocessor;
 import edu.stanford.nlp.tagger.maxent.MaxentTagger;
-import edu.stanford.nlp.trees.GrammaticalRelation;
 import edu.stanford.nlp.trees.GrammaticalStructure;
 import edu.stanford.nlp.trees.Tree;
 import edu.stanford.nlp.trees.TypedDependency;
 
-public class Process {
+public class ProcessUtility {
 
-	GloVe glove = null;
+	private GloVe _glove = null;
+	private Graph _graph = null;
 
-	public Process() {
-		glove = new GloVe();
+	public ProcessUtility() {
+		_glove = new GloVe();
+		_graph = new Graph();
+	}
+
+	public Graph getGraph() {
+		return this._graph;
 	}
 
 	// CLI function
-	public ArrayList<Node> processReviews(String review) {
+	public ArrayList<Node> processReviews(String review, int review_id) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		String[] paragraphs = review.split("\n");
 		for (String paragraph : paragraphs) {
 			if (paragraph.length() > 0) {
 				ArrayList<String> sentences = segSentence(paragraph);
 				for (String sentence : sentences) {
-					candidates_nodes.addAll(processSentence(sentence));
+					candidates_nodes.addAll(processSentence(sentence, review_id));
 				}
 			}
 		}
@@ -56,7 +61,7 @@ public class Process {
 	}
 
 	// process the sentence CLI
-	public ArrayList<Node> processSentence(String sentence) {
+	public ArrayList<Node> processSentence(String sentence, int review_id) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		// does detect phrase for now, use dependency parser of compound
 		// relationship
@@ -74,7 +79,7 @@ public class Process {
 		// Helper.mapTreeSentence(child_tree), "food");
 		// candidates_nodes.addAll(candidates_temp_nodes);
 		// }
-		//so instead use 
+		// so instead use
 		candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
 		return candidates_nodes;
 	}
@@ -87,6 +92,66 @@ public class Process {
 			sentences.add(sentenceString.toString());
 		}
 		return sentences;
+	}
+
+	public Tree filterSentence(String sentence) {
+		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
+		Tree tree = lp.parse(sentence);
+		tree = tree.children()[0]; // skip ROOT tag
+		Queue<Tree> queue_nodes = new LinkedList<>();
+		for (int i = 0; i < tree.children().length; i++) {
+			queue_nodes.add(tree.children()[i]);
+		}
+		while (true) {
+			Tree child_tree = queue_nodes.poll();
+			for (int i = 0; i < child_tree.children().length; i++) {
+				if (Helper.isInArray(child_tree.children()[i].value(), Config.TAGS_FILTER_OUT)) {
+					child_tree.removeChild(i);
+				} else {
+					queue_nodes.add(child_tree.children()[i]);
+				}
+			}
+			if (queue_nodes.size() == 0) {
+				break;
+			}
+		}
+		return tree;
+	}
+
+	// generate graph of dependency relation
+	public Graph generateDependencyGraph(String clause, int review_id) {
+
+		DependencyParser parser = Module.getInst().getDependencyParser();
+		MaxentTagger tagger = Module.getInst().getTagger();
+		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
+		System.out.println("Parsing : " + clause);
+		// build up the graph, informed with POS tag and dependency relationship
+		for (List<HasWord> token_part : tokenizer) {
+			List<TaggedWord> tagged = tagger.tagSentence(token_part);
+			GrammaticalStructure gs = parser.predict(tagged);
+			for (TypedDependency typed_dependence : gs.allTypedDependencies()) {
+				int idx_gov = typed_dependence.gov().index() - 1;
+				int idx_dep = typed_dependence.dep().index() - 1;
+				PartOfSpeech pos_gov = PartOfSpeech.OTHER;
+				if (idx_gov >= 0) {
+					pos_gov = Helper.mapPartOfSpeech(tagged.get(idx_gov).tag());
+				}
+				PartOfSpeech pos_dep = PartOfSpeech.OTHER;
+				if (idx_dep >= 0) {
+					pos_dep = Helper.mapPartOfSpeech(tagged.get(idx_dep).tag());
+				}
+
+				String lemma_gov = typed_dependence.gov().value();
+				String lemma_dep = typed_dependence.dep().value();
+				Node gov = _graph.createNode(pos_gov, lemma_gov);
+				Node dep = _graph.createNode(pos_dep, lemma_dep);
+
+				DependencyType dependency_type = Helper.mapRelationTypes(typed_dependence.reln().getShortName());
+				_graph.createEdge(gov, dep, dependency_type, review_id, idx_gov);
+			}
+		}
+
+		return _graph;
 	}
 
 	// preprocess: tokenize by tagger / phrase detection by xx xx NOUN / xx NOUN
@@ -130,11 +195,31 @@ public class Process {
 	}
 
 	// using wikipedia for phrase detect
+	// one-layer split tree
+	@Deprecated
+	public ArrayList<Tree> splitTree(Tree tree) {
+		ArrayList<Tree> trees = new ArrayList<>();
+		boolean is_simple_sent = true;
+		for (Tree child_tree : tree.children()) {
+			if (Helper.isInArray(child_tree.value(), Config.PENNTREE_CLAUSE_TAGS)) {
+				is_simple_sent = false;
+			}
+			trees.add(child_tree);
+		}
+		if (is_simple_sent) {
+			trees.clear();
+			trees.add(tree);
+		}
+		return trees;
+	}
+
+	@Deprecated
 	public boolean detectPhrase(String phrase) {
 		return detectPhrase(phrase, false, true);
 	}
 
 	// using wikipedia for phrase detect
+	@Deprecated
 	public boolean detectPhrase(String phrase, boolean allow_wiki_redirect, boolean allow_transfor_lowercase) {
 		String url = "https://en.wikipedia.org/wiki/" + phrase.replace(" ", "_");
 		try {
@@ -178,87 +263,7 @@ public class Process {
 	}
 
 	// filter out unimportant (Config.TAGS_FILTER_OUT) CFG parts
-	public Tree filterSentence(String sentence) {
-		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
-		Tree tree = lp.parse(sentence);
-		tree = tree.children()[0]; // skip ROOT tag
-		Queue<Tree> queue_nodes = new LinkedList<>();
-		for (int i = 0; i < tree.children().length; i++) {
-			queue_nodes.add(tree.children()[i]);
-		}
-		while (true) {
-			Tree child_tree = queue_nodes.poll();
-			for (int i = 0; i < child_tree.children().length; i++) {
-				if (Helper.isInArray(child_tree.children()[i].value(), Config.TAGS_FILTER_OUT)) {
-					child_tree.removeChild(i);
-				} else {
-					queue_nodes.add(child_tree.children()[i]);
-				}
-			}
-			if (queue_nodes.size() == 0) {
-				break;
-			}
-		}
-		return tree;
-	}
-
-	// one-layer split tree
 	@Deprecated
-	public ArrayList<Tree> splitTree(Tree tree) {
-		ArrayList<Tree> trees = new ArrayList<>();
-		boolean is_simple_sent = true;
-		for (Tree child_tree : tree.children()) {
-			if (Helper.isInArray(child_tree.value(), Config.PENNTREE_CLAUSE_TAGS)) {
-				is_simple_sent = false;
-			}
-			trees.add(child_tree);
-		}
-		if (is_simple_sent) {
-			trees.clear();
-			trees.add(tree);
-		}
-		return trees;
-	}
-
-	// generate graph of dependency relation
-	public Graph generateDependencyGraph(String clause) {
-		Graph graph = new Graph();
-		DependencyParser parser = Module.getInst().getDependencyParser();
-		MaxentTagger tagger = Module.getInst().getTagger();
-		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
-		System.out.println("Parsing : " + clause);
-		// build up the graph, informed with POS tag and dependency relationship
-		for (List<HasWord> token_part : tokenizer) {
-			List<TaggedWord> tagged = tagger.tagSentence(token_part);
-			GrammaticalStructure gs = parser.predict(tagged);
-			GrammaticalRelation rel =gs.getGrammaticalRelation(0, 1);
-
-			
-			for (TypedDependency typed_dependence : gs.allTypedDependencies()) {
-				int idx_gov = typed_dependence.gov().index() - 1;
-				int idx_dep = typed_dependence.dep().index() - 1;
-				PartOfSpeech pos_gov = PartOfSpeech.OTHER;
-				if (idx_gov >= 0) {
-					pos_gov = Helper.mapPartOfSpeech(tagged.get(idx_gov).tag());
-				}
-				PartOfSpeech pos_dep = PartOfSpeech.OTHER;
-				if (idx_dep >= 0) {
-					pos_dep = Helper.mapPartOfSpeech(tagged.get(idx_dep).tag());
-				}
-
-				String lemma_gov = typed_dependence.gov().value();
-				String lemma_dep = typed_dependence.dep().value();
-				Node gov = graph.createNode(pos_gov, lemma_gov, idx_gov, 0);
-				Node dep = graph.createNode(pos_dep, lemma_dep, idx_dep, 0);
-
-				DependencyType dependency_type = Helper.mapRelationTypes(typed_dependence.reln().getShortName());
-				graph.createEdge(gov, dep, dependency_type);
-			}
-		}
-
-		return graph;
-	}
-
 	public ArrayList<Node> getCenterWordCandidatesFromSimMeasure(String clause, String target_word) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		MaxentTagger tagger = Module.getInst().getTagger();
@@ -273,7 +278,7 @@ public class Process {
 					if (word.contains("_")) {
 						word = word.substring(word.lastIndexOf("_") + 1);
 					}
-					node.setScore(glove.sim(word, target_word));
+					node.setScore(_glove.sim(word, target_word));
 					candidates_nodes.add(node);
 				}
 			}
@@ -288,10 +293,12 @@ public class Process {
 		return candidates_nodes;
 	}
 
+	@Deprecated
 	public ArrayList<Node> getCenterWordCandidatesFromGraph(String clause) {
-		return getCenterWordCandidatesFromGraph(generateDependencyGraph(clause));
+		return getCenterWordCandidatesFromGraph(generateDependencyGraph(clause, 0));
 	}
 
+	@Deprecated
 	public ArrayList<Node> getCenterWordCandidatesFromGraph(Graph graph) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		Collection<Node> nodes = graph.getNodes();
@@ -311,4 +318,5 @@ public class Process {
 		// });
 		return candidates_nodes;
 	}
+
 }

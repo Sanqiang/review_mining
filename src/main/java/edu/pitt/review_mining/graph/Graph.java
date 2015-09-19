@@ -23,22 +23,23 @@ public class Graph {
 		return _nodes.values();
 	}
 
-	public Node createNode(PartOfSpeech pos, String lemma, int loc_sent, int idx_sent) {
-		Node n = new Node(pos, lemma, loc_sent, idx_sent);
+	public Node createNode(PartOfSpeech pos, String lemma) {
+		Node n = new Node(pos, lemma);
 		if (_nodes.containsKey(n.getIdentify())) {
 			return _nodes.get(n.getIdentify());
 		} else {
 			_nodes.put(n.getIdentify(), n);
 			return n;
 		}
-
 	}
 
-	public Edge createEdge(Node gov, Node dep, DependencyType type) {
+	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx) {
 		Edge e = new Edge(gov, dep, type);
 		if (_edges.containsKey(e.getIdentify())) {
-			return _edges.get(e.getIdentify());
-		}else{
+			e = _edges.get(e.getIdentify());
+			e.incrementCount(sentence_idx,word_idx);
+			return e;
+		} else {
 			gov._outcoming_edges.add(e);
 			dep._incoming_edges.add(e);
 			_edges.put(e.getIdentify(), e);

@@ -7,7 +7,7 @@ public enum DependencyType {
 	NominalSubject,  //nsubj in Stanford
 	DirectObject, //dobj in Stanford
 	Conjunction, //conj in Stanford
-	
+	Compound,
 	//MISCELLANEOUS ONE, FOR UNINTERESTING AND UNMAPPED RELATIONS
 	OTHER;
 }

@@ -58,6 +58,9 @@ public class Helper {
 		case "conj":
 			mappedRelType= DependencyType.Conjunction;
 			break;
+		case "compound":
+			mappedRelType = DependencyType.Compound;
+			break;
 		default:
 			mappedRelType=DependencyType.OTHER;
 			break;

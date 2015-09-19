@@ -11,7 +11,7 @@ public class Node {
 	ArrayList<Edge> _incoming_edges;
 	ArrayList<Edge> _outcoming_edges;
 	private double _score = 0d;
-	// optional
+	private int _count ;
 	private int _loc_sent;
 	private int _idx_sent;
 
@@ -22,17 +22,25 @@ public class Node {
 		this._outcoming_edges = new ArrayList<>();
 	}
 
-	public Node(PartOfSpeech pos, String lemma, int loc_sent, int idx_sent) {
-		this._pos = pos;
-		this._lemma = lemma;
-		this._incoming_edges = new ArrayList<>();
-		this._outcoming_edges = new ArrayList<>();
-		this._loc_sent = loc_sent;
-		this._idx_sent = idx_sent;
+//	public Node(PartOfSpeech pos, String lemma, int loc_sent, int idx_sent) {
+//		this._pos = pos;
+//		this._lemma = lemma;
+//		this._incoming_edges = new ArrayList<>();
+//		this._outcoming_edges = new ArrayList<>();
+//		this._loc_sent = loc_sent;
+//		this._idx_sent = idx_sent;
+//	}
+	
+	public void incrementCount() {
+		++this._count;
+	}
+	
+	public int getCount(){
+		return this._count;
 	}
 
 	public String getIdentify() {
-		return String.join("_", _lemma, _pos.name(), String.valueOf(_loc_sent));
+		return String.join("_", _lemma, _pos.name());
 	}
 
 	public PartOfSpeech getPOS() {
