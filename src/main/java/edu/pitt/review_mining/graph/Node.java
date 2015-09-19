@@ -1,11 +1,16 @@
 package edu.pitt.review_mining.graph;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import edu.pitt.review_mining.utility.DependencyType;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 
-public class Node implements Cloneable {
+public class Node implements Cloneable,Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private PartOfSpeech _pos;
 	private String _lemma;
 	ArrayList<Edge> _incoming_edges;

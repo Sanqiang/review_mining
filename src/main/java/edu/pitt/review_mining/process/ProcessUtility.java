@@ -168,8 +168,8 @@ public class ProcessUtility {
 					}
 					
 					// DependencyType.ConjAndComp : The chicken and rice with white sauce is delicious. chicken rice is delicious.
-					if (edge.getDependencyType() == DependencyType.NounCompoundModifier
-							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+					if (edge.getDependencyType() == DependencyType.Conjunction
+							&& another_node.getPOS() == PartOfSpeech.NOUN) {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.ConjAndComp, review_id,
@@ -185,7 +185,7 @@ public class ProcessUtility {
 							&& another_node.getPOS() == PartOfSpeech.NOUN) {
 						for (Edge edge2 : another_node.getOutcomingEdges()) {
 							Node another_node2 = edge2.getOtherNode(another_node);
-							if (edge.getDependencyType() == DependencyType.AdjectivalModifier
+							if (edge2.getDependencyType() == DependencyType.AdjectivalModifier
 									&& another_node2.getPOS() == PartOfSpeech.ADJECTIVE) {
 								Node node_global = this._graph.createNode(node);
 								Node another_node_global = this._graph.createNode(another_node2);

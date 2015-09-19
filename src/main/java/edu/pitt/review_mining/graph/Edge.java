@@ -1,11 +1,16 @@
 package edu.pitt.review_mining.graph;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import edu.pitt.review_mining.utility.DependencyType;
 
-public class Edge implements Cloneable {
+public class Edge implements Cloneable,Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private DependencyType _type;
 	// gov -> dep
 	private Node _dep;

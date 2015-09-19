@@ -3,9 +3,11 @@ package edu.pitt.review_mining.process;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -68,7 +70,13 @@ public class CLI {
 
 	}
 
-	public static void main(String[] args) {
-		intepretGraph(readData(Config.PATH_TEXT));
+	public static void main(String[] args) throws Exception {
+		Graph graph = readData(Config.PATH_TEXT);
+		File file = new File("graph.out");
+        ObjectOutputStream oout = new ObjectOutputStream(new FileOutputStream(file));
+        oout.writeObject(graph);
+        oout.close();
+		
+		//intepretGraph(graph);
 	}
 }

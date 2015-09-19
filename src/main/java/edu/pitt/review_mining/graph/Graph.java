@@ -1,12 +1,17 @@
 package edu.pitt.review_mining.graph;
 
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashMap;
 
 import edu.pitt.review_mining.utility.DependencyType;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 
-public class Graph {
+public class Graph implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private HashMap<String, Node> _nodes;
 	private HashMap<String, Edge> _edges;
 
