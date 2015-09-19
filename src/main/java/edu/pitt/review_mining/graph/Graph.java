@@ -38,12 +38,19 @@ public class Graph {
 	}
 
 	public Node createNode(Node n) {
-		if (_nodes.containsKey(n.getIdentify())) {
-			return _nodes.get(n.getIdentify());
-		} else {
-			_nodes.put(n.getIdentify(), n);
+		try {
+			n = (Node) n.clone();
+			if (_nodes.containsKey(n.getIdentify())) {
+				return _nodes.get(n.getIdentify());
+			} else {
+				_nodes.put(n.getIdentify(), n);
+				return n;
+			}
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
 			return n;
 		}
+
 	}
 
 	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx) {

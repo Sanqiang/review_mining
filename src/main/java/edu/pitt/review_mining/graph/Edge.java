@@ -1,12 +1,11 @@
 package edu.pitt.review_mining.graph;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
 import edu.pitt.review_mining.utility.DependencyType;
 
-public class Edge {
+public class Edge implements Cloneable {
 	private DependencyType _type;
 	// gov -> dep
 	private Node _dep;
@@ -57,5 +56,10 @@ public class Edge {
 		} else {
 			return null;
 		}
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		return super.clone();
 	}
 }

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import edu.pitt.review_mining.utility.DependencyType;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 
-public class Node {
+public class Node implements Cloneable {
 	private PartOfSpeech _pos;
 	private String _lemma;
 	ArrayList<Edge> _incoming_edges;
 	ArrayList<Edge> _outcoming_edges;
 	private double _score = 0d;
-	private int _count ;
+	private int _count;
 	private int _loc_sent;
 	private int _idx_sent;
 
@@ -30,12 +30,12 @@ public class Node {
 		this._loc_sent = loc_sent;
 		this._idx_sent = idx_sent;
 	}
-	
+
 	public void incrementCount() {
 		++this._count;
 	}
-	
-	public int getCount(){
+
+	public int getCount() {
 		return this._count;
 	}
 
@@ -67,14 +67,24 @@ public class Node {
 		return this._score;
 	}
 
-	public int getSentenceIdx(){
+	public int getSentenceIdx() {
 		return _idx_sent;
 	}
-	
+
 	public int getSentenceLoc() {
 		return _loc_sent;
 	}
-	
+
+	// need deep copy
+	@Override
+	protected Node clone() throws CloneNotSupportedException {
+		Node n = new Node(this._pos, this._lemma, this._loc_sent, this._idx_sent);
+		// new node need new type(global) of link instead of old type(local)
+		n._incoming_edges = new ArrayList<>();
+		n._outcoming_edges = new ArrayList<>();
+		return n;
+	}
+
 	// gov -> dep
 	@Deprecated
 	public Edge addEdge(Node node, DependencyType type, boolean is_self_gov) {
