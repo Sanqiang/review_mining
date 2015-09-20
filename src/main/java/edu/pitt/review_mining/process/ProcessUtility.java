@@ -54,7 +54,7 @@ public class ProcessUtility {
 			if (paragraph.length() > 0) {
 				ArrayList<String> sentences = segSentence(paragraph);
 				for (String sentence : sentences) {
-					candidates_nodes.addAll(processSentence(sentence, review_id));
+					candidates_nodes.addAll(processSentence(sentence.toLowerCase(), review_id));
 				}
 			}
 		}
@@ -80,8 +80,9 @@ public class ProcessUtility {
 		// Helper.mapTreeSentence(child_tree), "food");
 		// candidates_nodes.addAll(candidates_temp_nodes);
 		// }
+		//candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
 		// so instead use
-		candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
+		generateDependencyGraph(Helper.mapTreeSentence(tree), review_id);
 		return candidates_nodes;
 	}
 

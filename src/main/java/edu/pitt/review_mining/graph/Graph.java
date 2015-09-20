@@ -68,6 +68,7 @@ public class Graph implements Serializable {
 			gov._outcoming_edges.add(e);
 			dep._incoming_edges.add(e);
 			_edges.put(e.getIdentify(), e);
+			e.incrementCount(sentence_idx, word_idx);
 			return e;
 		}
 

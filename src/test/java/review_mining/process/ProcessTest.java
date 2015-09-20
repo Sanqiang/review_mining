@@ -15,8 +15,20 @@ import edu.stanford.nlp.trees.Tree;
 
 public class ProcessTest {
 
-	// test 4+ types of rules
+	
 	@Test
+	public void testRuleAddCount(){
+		ProcessUtility pu = new ProcessUtility();
+		pu.processReviews("food is delicious.", 1);
+		pu.processReviews("food is delicious.", 2);
+		pu.processReviews("food is delicious.", 3);
+		Graph graph = pu.getGraph();
+		System.out.println(graph);
+		assert(true);
+	}
+	
+	// test 4+ types of rules
+	//@Test
 	public void testRule() {
 		ProcessUtility pu = new ProcessUtility();
 		// SingleAmod, //red food is good.
