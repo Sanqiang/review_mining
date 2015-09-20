@@ -67,7 +67,7 @@ public class ProcessUtility {
 		// does detect phrase for now, use dependency parser of compound
 		// relationship
 		// sentence = preprocessSentence(sentence);
-		Tree tree = filterSentence(sentence);
+		//Tree tree = filterSentence(sentence);
 		// split tree break dependency parser so deprecated
 		// ArrayList<Tree> trees = splitTree(tree);
 		// for (int i = trees.size() - 1; i >= 0; i--) {
@@ -82,7 +82,8 @@ public class ProcessUtility {
 		// }
 		//candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
 		// so instead use
-		generateDependencyGraph(Helper.mapTreeSentence(tree), review_id);
+		//generateDependencyGraph(Helper.mapTreeSentence(tree), review_id);
+		generateDependencyGraph(sentence, review_id);
 		return candidates_nodes;
 	}
 

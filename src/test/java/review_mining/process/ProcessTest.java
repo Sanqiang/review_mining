@@ -15,13 +15,10 @@ import edu.pitt.review_mining.utility.PartOfSpeech;
 import edu.stanford.nlp.trees.Tree;
 
 public class ProcessTest {
-
-	
-
 	 @Test
 	public void testRuleAddCount() {
 		ProcessUtility pu = new ProcessUtility();
-		pu.processReviews("food is delicious. red sauce is good.", 0);
+		pu.processReviews("I can't believe 53rd and 6th halal has its own review thingamajig. A part of me doesn't want to rave about how good it is because I don't want the line getting any longer than it already is. But I won't be selfish. Go for the combo and their hot sauce is HOT.".toLowerCase(), 0);
 		pu.processReviews("food is delicious.", 1);
 		pu.processReviews("food is delicious.", 2);
 		Graph graph = pu.getGraph();
