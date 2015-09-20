@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 import com.eclipsesource.json.JsonArray;
@@ -22,6 +24,7 @@ import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.utility.Config;
 import edu.pitt.review_mining.utility.PartOfSpeech;
+import scala.annotation.varargs;
 
 public class CLI {
 	public static Graph readData(String path) {
@@ -46,6 +49,7 @@ public class CLI {
 
 	public static void intepretGraph(Graph graph) {
 		try {
+			// report 1: graph presentation
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("result.txt")));
 			Collection<Node> nodes = graph.getNodes();
 			ArrayList<JsonObject> arr = new ArrayList<>();
@@ -81,21 +85,41 @@ public class CLI {
 					arr.add(obj);
 					obj.add("total_count", total_count);
 				}
-				
 			}
-			Collections.sort(arr,new Comparator<JsonObject>() {
+			Collections.sort(arr, new Comparator<JsonObject>() {
 
 				@Override
 				public int compare(JsonObject o1, JsonObject o2) {
 					int total_count1 = o1.get("total_count").asInt();
 					int total_count2 = o2.get("total_count").asInt();
 					return total_count2 - total_count1;
-				}} );
+				}
+			});
 			JsonArray arr_json = new JsonArray();
 			for (JsonObject item_arr : arr) {
 				arr_json.add(item_arr);
 			}
 			writer.write(arr_json.toString());
+			writer.close();
+			// report 2 sentence presentation
+			writer = new BufferedWriter(new FileWriter(new File("result2.txt")));
+			HashMap<Integer, HashSet<Edge>> occurs = graph.getGlobalOccur();
+			JsonArray arr_occur = new JsonArray();
+			for (int i = 0; i < occurs.size(); i++) {
+				HashSet<Edge> edges = occurs.get(i);
+				JsonArray arr_occur_set = new JsonArray();
+				if (edges != null) {
+					for (Edge edge : edges) {
+						JsonObject arr_occur_obj = new JsonObject();
+						arr_occur_obj.add("id", edge.getIdentify());
+						arr_occur_obj.add("freq", edge.getCount());
+						arr_occur_set.add(arr_occur_obj);
+					}
+				}
+				
+				arr_occur.add(arr_occur_set);
+			}
+			writer.write(arr_occur.toString());
 			writer.close();
 		} catch (Exception ex) {
 			ex.printStackTrace();

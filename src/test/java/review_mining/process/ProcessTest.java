@@ -9,6 +9,7 @@ import org.junit.Test;
 import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
+import edu.pitt.review_mining.process.CLI;
 import edu.pitt.review_mining.process.ProcessUtility;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 import edu.stanford.nlp.trees.Tree;
@@ -16,19 +17,21 @@ import edu.stanford.nlp.trees.Tree;
 public class ProcessTest {
 
 	
-	@Test
-	public void testRuleAddCount(){
+
+	 @Test
+	public void testRuleAddCount() {
 		ProcessUtility pu = new ProcessUtility();
+		pu.processReviews("food is delicious. red sauce is good.", 0);
 		pu.processReviews("food is delicious.", 1);
 		pu.processReviews("food is delicious.", 2);
-		pu.processReviews("food is delicious.", 3);
 		Graph graph = pu.getGraph();
+		CLI.intepretGraph(graph);
 		System.out.println(graph);
 		assert(true);
 	}
-	
+
 	// test 4+ types of rules
-	//@Test
+	// @Test
 	public void testRule() {
 		ProcessUtility pu = new ProcessUtility();
 		// SingleAmod, //red food is good.
@@ -38,9 +41,10 @@ public class ProcessTest {
 		// chicken rice is delicious.
 		// test following by tune comment !
 		// Graph graph = pu.generateDependencyGraph("red food is good.", 0);
-		// Graph graph = pu.generateDependencyGraph("chicken is delicious food.", 0);
+		// Graph graph = pu.generateDependencyGraph("chicken is delicious
+		// food.", 0);
 		// Graph graph = pu.generateDependencyGraph("food is delicious.", 0);
-		 Graph graph = pu.generateDependencyGraph("the chicken and rice with white sauce is delicious.", 0);
+		Graph graph = pu.generateDependencyGraph("the chicken and rice with white sauce is delicious.", 0);
 		for (Node node : graph.getNodes()) {
 			if (node.getPOS() == PartOfSpeech.NOUN) {
 				System.out.println();
