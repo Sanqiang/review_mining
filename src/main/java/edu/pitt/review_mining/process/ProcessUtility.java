@@ -125,7 +125,6 @@ public class ProcessUtility {
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
 		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
-		System.out.println("Parsing : " + clause);
 		// build up the graph, informed with POS tag and dependency relationship
 		for (List<HasWord> token_part : tokenizer) {
 			List<TaggedWord> tagged = tagger.tagSentence(token_part);
@@ -324,7 +323,6 @@ public class ProcessUtility {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		MaxentTagger tagger = Module.getInst().getTagger();
 		DocumentPreprocessor tokenizer = new DocumentPreprocessor(new StringReader(clause));
-		System.out.println("Parsing : " + clause);
 		for (List<HasWord> token_part : tokenizer) {
 			List<TaggedWord> tagged = tagger.tagSentence(token_part);
 			for (TaggedWord taggedWord : tagged) {

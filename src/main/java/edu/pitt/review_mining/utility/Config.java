@@ -4,7 +4,7 @@ import edu.stanford.nlp.parser.nndep.DependencyParser;
 
 public class Config {
 	// path
-	public final static String PATH_TEXT = "data/the-halal-guys-new-york-2_text.txt";
+	public final static String PATH_TEXT = "data/the-halal-guys-new-york-2_text_toy.txt";
 
 	// for word2vec
 	@Deprecated
