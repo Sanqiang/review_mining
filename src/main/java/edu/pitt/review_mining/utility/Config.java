@@ -26,4 +26,8 @@ public class Config {
 	// reference tags: https://gist.github.com/nlothian/9240750
 	public final static String[] PENNTREE_CLAUSE_TAGS = { "S", "SBAR", "SBARQ", "SINV", "SQ" };
 	public final static String[] TAGS_FILTER_OUT = { "PP", "INTJ" };
+
+	// for report
+	public final static double[] WEIGHT_FORWARD_BACKWARD = { 0.50049, 0.25024, 0.12512, 0.062561, 0.031281, 0.01564, 0.0078201,
+			0.0039101, 0.001955, 0.00097752 };
 }

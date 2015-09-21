@@ -11,6 +11,7 @@ import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.process.CLI;
 import edu.pitt.review_mining.process.ProcessUtility;
+import edu.pitt.review_mining.process.Report;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 import edu.stanford.nlp.trees.Tree;
 
@@ -22,7 +23,7 @@ public class ProcessTest {
 		pu.processReviews("food is delicious.", 1);
 		pu.processReviews("food is delicious.", 2);
 		Graph graph = pu.getGraph();
-		CLI.intepretGraph(graph);
+		Report.intepretGraph(graph);
 		System.out.println(graph);
 		assert(true);
 	}
