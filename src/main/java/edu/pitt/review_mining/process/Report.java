@@ -22,6 +22,7 @@ import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.utility.Config;
+import edu.pitt.review_mining.utility.Helper;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 
 public class Report {
@@ -121,6 +122,8 @@ public class Report {
 						JsonObject arr_occur_obj = new JsonObject();
 						arr_occur_obj.add("id", edge.getIdentify());
 						arr_occur_obj.add("freq", edge.getCount());
+						arr_occur_obj.add("pos_first", Helper.getBit(edge.getFeatures(), 0));
+						arr_occur_obj.add("pos_last", Helper.getBit(edge.getFeatures(), 1));
 						arr_occur_set.add(arr_occur_obj);
 					}
 				}

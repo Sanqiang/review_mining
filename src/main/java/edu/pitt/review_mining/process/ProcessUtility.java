@@ -53,8 +53,14 @@ public class ProcessUtility {
 		for (String paragraph : paragraphs) {
 			if (paragraph.length() > 0) {
 				ArrayList<String> sentences = segSentence(paragraph);
-				for (String sentence : sentences) {
-					candidates_nodes.addAll(processSentence(sentence.toLowerCase(), review_id));
+				for (int i = 0; i < sentences.size(); i++) {
+					int pos_feature = 0;
+					if (i == 0) {
+						pos_feature = Helper.setBit(pos_feature, 0, true);
+					} else if (i == sentences.size() - 1) {
+						pos_feature = Helper.setBit(pos_feature, 1, true);
+					}
+					candidates_nodes.addAll(processSentence(sentences.get(i).toLowerCase(), review_id, pos_feature));
 				}
 			}
 		}
@@ -62,12 +68,12 @@ public class ProcessUtility {
 	}
 
 	// process the sentence CLI
-	public ArrayList<Node> processSentence(String sentence, int review_id) {
+	public ArrayList<Node> processSentence(String sentence, int review_id, int pos_feature) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		// does detect phrase for now, use dependency parser of compound
 		// relationship
 		// sentence = preprocessSentence(sentence);
-		//Tree tree = filterSentence(sentence);
+		// Tree tree = filterSentence(sentence);
 		// split tree break dependency parser so deprecated
 		// ArrayList<Tree> trees = splitTree(tree);
 		// for (int i = trees.size() - 1; i >= 0; i--) {
@@ -80,10 +86,10 @@ public class ProcessUtility {
 		// Helper.mapTreeSentence(child_tree), "food");
 		// candidates_nodes.addAll(candidates_temp_nodes);
 		// }
-		//candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
+		// candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
 		// so instead use
-		//generateDependencyGraph(Helper.mapTreeSentence(tree), review_id);
-		generateDependencyGraph(sentence, review_id);
+		// generateDependencyGraph(Helper.mapTreeSentence(tree), review_id);
+		generateDependencyGraph(sentence, review_id, pos_feature);
 		return candidates_nodes;
 	}
 
@@ -122,7 +128,7 @@ public class ProcessUtility {
 	}
 
 	// generate graph of dependency relation
-	public Graph generateDependencyGraph(String clause, int review_id) {
+	public Graph generateDependencyGraph(String clause, int review_id, int pos_feature) {
 		Graph local_graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
@@ -149,7 +155,7 @@ public class ProcessUtility {
 				Node dep = local_graph.createNode(pos_dep, lemma_dep, review_id, idx_dep);
 
 				DependencyType dependency_type = Helper.mapRelationTypes(typed_dependence.reln().getShortName());
-				local_graph.createEdge(gov, dep, dependency_type, review_id, idx_gov);
+				local_graph.createEdge(gov, dep, dependency_type, review_id, idx_gov, pos_feature);
 			}
 		}
 
@@ -165,16 +171,17 @@ public class ProcessUtility {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleAmod, review_id,
-								node.getSentenceLoc());
+								node.getSentenceLoc(), pos_feature);
 					}
-					
-					// DependencyType.ConjAndComp : The chicken and rice with white sauce is delicious. chicken rice is delicious.
+
+					// DependencyType.ConjAndComp : The chicken and rice with
+					// white sauce is delicious. chicken rice is delicious.
 					if (edge.getDependencyType() == DependencyType.Conjunction
 							&& another_node.getPOS() == PartOfSpeech.NOUN) {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.ConjAndComp, review_id,
-								node.getSentenceLoc());
+								node.getSentenceLoc(), pos_feature);
 					}
 				}
 
@@ -191,7 +198,7 @@ public class ProcessUtility {
 								Node node_global = this._graph.createNode(node);
 								Node another_node_global = this._graph.createNode(another_node2);
 								this._graph.createEdge(node_global, another_node_global, DependencyType.AmodSubj,
-										review_id, node.getSentenceLoc());
+										review_id, node.getSentenceLoc(), pos_feature);
 							}
 						}
 					}
@@ -202,7 +209,7 @@ public class ProcessUtility {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleSubj, review_id,
-								node.getSentenceLoc());
+								node.getSentenceLoc(), pos_feature);
 					}
 				}
 			}
@@ -351,7 +358,7 @@ public class ProcessUtility {
 
 	@Deprecated
 	public ArrayList<Node> getCenterWordCandidatesFromGraph(String clause) {
-		return getCenterWordCandidatesFromGraph(generateDependencyGraph(clause, 0));
+		return getCenterWordCandidatesFromGraph(generateDependencyGraph(clause, 0, 0));
 	}
 
 	@Deprecated

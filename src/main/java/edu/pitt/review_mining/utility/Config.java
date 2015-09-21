@@ -4,7 +4,7 @@ import edu.stanford.nlp.parser.nndep.DependencyParser;
 
 public class Config {
 	// path
-	public final static String PATH_TEXT = "data/the-halal-guys-new-york-2_text_toy.txt";
+	public final static String PATH_TEXT = "data/the-halal-guys-new-york-2_text_full.txt";
 
 	// for word2vec
 	@Deprecated
@@ -28,6 +28,8 @@ public class Config {
 	public final static String[] TAGS_FILTER_OUT = { "PP", "INTJ" };
 
 	// for report
+	public final static String PATH_REPORT_GRAPH  = "repot_graph.json";
+	public final static String PATH_REPORT_ASPECT  = "repot_aspect.json";
 	public final static double[] WEIGHT_FORWARD_BACKWARD = { 0.50049, 0.25024, 0.12512, 0.062561, 0.031281, 0.01564, 0.0078201,
 			0.0039101, 0.001955, 0.00097752 };
 }

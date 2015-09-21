@@ -12,14 +12,18 @@ import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.process.CLI;
 import edu.pitt.review_mining.process.ProcessUtility;
 import edu.pitt.review_mining.process.Report;
+import edu.pitt.review_mining.utility.Helper;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 import edu.stanford.nlp.trees.Tree;
 
 public class ProcessTest {
-	 @Test
+	// @Test
 	public void testRuleAddCount() {
 		ProcessUtility pu = new ProcessUtility();
-		pu.processReviews("I can't believe 53rd and 6th halal has its own review thingamajig. A part of me doesn't want to rave about how good it is because I don't want the line getting any longer than it already is. But I won't be selfish. Go for the combo and their hot sauce is HOT.".toLowerCase(), 0);
+		pu.processReviews(
+				"I can't believe 53rd and 6th halal has its own review thingamajig. A part of me doesn't want to rave about how good it is because I don't want the line getting any longer than it already is. But I won't be selfish. Go for the combo and their hot sauce is HOT."
+						.toLowerCase(),
+				0);
 		pu.processReviews("food is delicious.", 1);
 		pu.processReviews("food is delicious.", 2);
 		Graph graph = pu.getGraph();
@@ -38,11 +42,11 @@ public class ProcessTest {
 		// ConjAndComp; //The chicken and rice with white sauce is delicious.
 		// chicken rice is delicious.
 		// test following by tune comment !
-		// Graph graph = pu.generateDependencyGraph("red food is good.", 0);
+		// Graph graph = pu.generateDependencyGraph("red food is good.", 0,0);
 		// Graph graph = pu.generateDependencyGraph("chicken is delicious
-		// food.", 0);
-		// Graph graph = pu.generateDependencyGraph("food is delicious.", 0);
-		Graph graph = pu.generateDependencyGraph("the chicken and rice with white sauce is delicious.", 0);
+		// food.", 0,0);
+		// Graph graph = pu.generateDependencyGraph("food is delicious.", 0,0);
+		Graph graph = pu.generateDependencyGraph("the chicken and rice with white sauce is delicious.", 0, 0);
 		for (Node node : graph.getNodes()) {
 			if (node.getPOS() == PartOfSpeech.NOUN) {
 				System.out.println();
@@ -74,9 +78,7 @@ public class ProcessTest {
 				}
 			}
 		});
-		for (Node node : candidates_nodes)
-
-		{
+		for (Node node : candidates_nodes) {
 			System.out.println(node.getLemma() + " : " + node.getScore());
 		}
 		assert(true);
@@ -98,7 +100,7 @@ public class ProcessTest {
 		ProcessUtility word = new ProcessUtility();
 		word.processSentence(
 				"CA$H ONLY!!! Wait in line, pick what you want, pay the man, and eat to your heart's desire. This easily counts as two meals which is such a steal. Not to mention it is very yummy whether you are super hungry or not. The combo meal of chicken, lamb, rice, and veggies may not be the most photogenic for Instagram, but it definitely fits the bill to be the winner of a superlative named Super Cheap & Extra Good.",
-				0);
+				0, 0);
 		assert(true);
 	}
 
@@ -136,14 +138,15 @@ public class ProcessTest {
 		// word.processSentence("red red sauce is pretty good, but I like white
 		// meat");
 		Tree tree = word.filterSentence(
-				"came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");
+				"I can't believe 53rd and 6th halal has its own review thingamajig. A part of me doesn't want to rave about how good it is because I don't want the line getting any longer than it already is. But I won't be selfish. Go for the combo and their hot sauce is HOT.");
 		System.out.println(tree);
+		System.out.println(Helper.mapTreeSentence(tree));
 		assert(true);
 	}
 
 	// @Test
 	public void testGenerateDependencyGraph() {
-		new ProcessUtility().generateDependencyGraph("red red sauce is pretty good, but I like white meat", 0);
+		new ProcessUtility().generateDependencyGraph("red red sauce is pretty good, but I like white meat", 0, 0);
 		assert(true);
 	}
 

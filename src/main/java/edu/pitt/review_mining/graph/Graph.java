@@ -59,19 +59,24 @@ public class Graph implements Serializable {
 
 	}
 
-	public void incrementGlobalCount(Edge e,int sentence_idx, int word_idx) {
+	public void incrementGlobalCount(Edge e, int sentence_idx, int word_idx) {
 		if (!this._edge_occurs.containsKey(sentence_idx)) {
 			this._edge_occurs.put(sentence_idx, new HashSet<>());
 		}
 		this._edge_occurs.get(sentence_idx).add(e);
 	}
-	
+
 	public HashMap<Integer, HashSet<Edge>> getGlobalOccur() {
 		return this._edge_occurs;
 	}
-	
+
 	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx) {
+		return createEdge(gov, dep, type, sentence_idx, word_idx, 0);
+	}
+
+	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx, int pos_feature) {
 		Edge e = new Edge(gov, dep, type);
+		e.setFeatures(pos_feature);
 		if (_edges.containsKey(e.getIdentify())) {
 			e = _edges.get(e.getIdentify());
 			e.incrementCount(sentence_idx, word_idx);
@@ -85,7 +90,6 @@ public class Graph implements Serializable {
 			incrementGlobalCount(e, sentence_idx, word_idx);
 			return e;
 		}
-
 	}
 
 }

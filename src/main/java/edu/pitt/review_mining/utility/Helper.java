@@ -86,4 +86,15 @@ public class Helper {
 		}
 		return sb.toString();
 	}
+
+	public static int setBit(int val, int pos, boolean flag) {
+		if (flag) {
+			val |= (1 << pos);
+		}
+		return val;
+	}
+	
+	public static boolean getBit(int val, int pos) {
+		return (val >> pos) % 2 > 0;
+	}
 }
