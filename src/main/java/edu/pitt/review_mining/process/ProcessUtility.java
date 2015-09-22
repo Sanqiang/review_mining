@@ -73,7 +73,7 @@ public class ProcessUtility {
 		// does detect phrase for now, use dependency parser of compound
 		// relationship
 		// sentence = preprocessSentence(sentence);
-		// Tree tree = filterSentence(sentence);
+		sentence = filterSentence(sentence);
 		// split tree break dependency parser so deprecated
 		// ArrayList<Tree> trees = splitTree(tree);
 		// for (int i = trees.size() - 1; i >= 0; i--) {
@@ -88,8 +88,8 @@ public class ProcessUtility {
 		// }
 		// candidates_nodes.addAll(getCenterWordCandidatesFromGraph(Helper.mapTreeSentence(tree)));
 		// so instead use
-		// generateDependencyGraph(Helper.mapTreeSentence(tree), review_id);
 		generateDependencyGraph(sentence, review_id, pos_feature);
+		// generateDependencyGraph(sentence, review_id, pos_feature);
 		return candidates_nodes;
 	}
 
@@ -103,7 +103,7 @@ public class ProcessUtility {
 		return sentences;
 	}
 
-	public Tree filterSentence(String sentence) {
+	public String filterSentence(String sentence) {
 		LexicalizedParser lp = Module.getInst().getLexicalizedParser();
 		Tree tree = lp.parse(sentence);
 		tree = tree.children()[0]; // skip ROOT tag
@@ -124,7 +124,12 @@ public class ProcessUtility {
 				break;
 			}
 		}
-		return tree;
+
+		if (Helper.mapTreeSentence(tree).length() * 2 <= sentence.length()) {
+			return sentence;
+		} else {
+			return Helper.mapTreeSentence(tree);
+		}
 	}
 
 	// generate graph of dependency relation

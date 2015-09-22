@@ -121,26 +121,26 @@ public class ProcessTest {
 	}
 
 	// @Test
-	public void testSplitSentence() {
-		ProcessUtility word = new ProcessUtility();
-		Tree tree = word.filterSentence(
-				"came here after a club bc more than one person recommended I get chicken and rice from this infamous corner.");
-		ArrayList<Tree> trees = word.splitTree(tree);
-		for (Tree child_tree : trees) {
-			System.out.println(child_tree);
-		}
-		assert(true);
-	}
+	// public void testSplitSentence() {
+	// ProcessUtility word = new ProcessUtility();
+	// Tree tree = word.filterSentence(
+	// "came here after a club bc more than one person recommended I get chicken
+	// and rice from this infamous corner.");
+	// ArrayList<Tree> trees = word.splitTree(tree);
+	// for (Tree child_tree : trees) {
+	// System.out.println(child_tree);
+	// }
+	// assert(true);
+	// }
 
-	// @Test
+	 @Test
 	public void testFilterSentence() {
 		ProcessUtility word = new ProcessUtility();
 		// word.processSentence("red red sauce is pretty good, but I like white
 		// meat");
-		Tree tree = word.filterSentence(
-				"I can't believe 53rd and 6th halal has its own review thingamajig. A part of me doesn't want to rave about how good it is because I don't want the line getting any longer than it already is. But I won't be selfish. Go for the combo and their hot sauce is HOT.");
-		System.out.println(tree);
-		System.out.println(Helper.mapTreeSentence(tree));
+		String sent = "I order the rice and chicken in first time";//"Go for the combo and their hot sauce is HOT.";
+		sent = word.filterSentence(sent);
+		System.out.println(sent);
 		assert(true);
 	}
 
