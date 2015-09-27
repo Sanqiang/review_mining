@@ -2,7 +2,7 @@ package review_mining.process;
 
 import org.junit.Test;
 
-import edu.pitt.review_mining.process.Word2VecUtility;
+import edu.pitt.review_mining.process.text.Word2VecUtility;
 
 @Deprecated
 public class Word2VecTest {

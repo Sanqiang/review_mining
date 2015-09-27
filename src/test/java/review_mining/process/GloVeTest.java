@@ -2,7 +2,7 @@ package review_mining.process;
 
 import org.junit.Test;
 
-import edu.pitt.review_mining.process.GloVe;
+import edu.pitt.review_mining.process.text.GloVe;
 import edu.pitt.review_mining.utility.Config;
 
 public class GloVeTest {

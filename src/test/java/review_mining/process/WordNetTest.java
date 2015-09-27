@@ -2,7 +2,7 @@ package review_mining.process;
 
 import org.junit.Test;
 
-import edu.pitt.review_mining.process.WordNetUtility;
+import edu.pitt.review_mining.process.text.WordNetUtility;
 
 public class WordNetTest {
 	@Test

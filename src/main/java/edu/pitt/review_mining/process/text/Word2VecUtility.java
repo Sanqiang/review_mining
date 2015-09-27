@@ -1,4 +1,4 @@
-package edu.pitt.review_mining.process;
+package edu.pitt.review_mining.process.text;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

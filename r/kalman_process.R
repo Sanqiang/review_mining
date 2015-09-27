@@ -1,0 +1,50 @@
+require("FKF")
+require("MASS")
+
+rating = read.table("C:\\Users\\phd2\\Dropbox\\eclipse_space\\ano_detect\\the-halal-guys-new-york-2.txt")[1:1000,1]
+rating = matrix(rating,25)
+
+
+aggre <- function(row){
+  c(length(which(row == 5)),length(which(row == 4)),length(which(row == 3)),length(which(row == 2)),length(which(row == 1)))/length(row)
+}
+
+## <--------------------------------------------------------------------------->
+## Example 2: Local level model for the Nile's annual flow.
+## <--------------------------------------------------------------------------->
+## Transition equation:
+## alpha[t+1] = alpha[t] + eta[t], eta[t] ~ N(0, HHt)
+## Measurement equation:
+## y[t] = alpha[t] + eps[t], eps[t] ~ N(0, GGt)
+rating <- apply(rating,2,aggre)
+residual = matrix(-1,nrow=dim(rating)[1],ncol=dim(rating)[2])
+for(r_id in 1:5){
+  y = rating[r_id,]
+  ## Set constant parameters:
+  dt <- ct <- matrix(0)
+  Zt <- Tt <- matrix(1)
+  a0 <- y[1] # Estimation of the first year flow
+  P0 <- matrix(100) # Variance of 'a0'
+  ## Estimate parameters:
+  fit.fkf <- optim(c(HHt = var(y, na.rm = TRUE) * .5,
+                     GGt = var(y, na.rm = TRUE) * .5),
+                   fn = function(par, ...)
+                     -fkf(HHt = matrix(par[1]), GGt = matrix(par[2]), ...)$logLik,
+                   yt = rbind(y), a0 = a0, P0 = P0, dt = dt, ct = ct,
+                   Zt = Zt, Tt = Tt, check.input = FALSE)
+  ## Filter Nile data with estimated parameters:
+  fkf.obj <- fkf(a0, P0, dt, ct, Tt, Zt, HHt = matrix(fit.fkf$par[1]),
+                 GGt = matrix(fit.fkf$par[2]), yt = rbind(y))
+  ## Compare with the stats' structural time series implementation:
+  fit.stats <- StructTS(y, type = "level")
+  fit.fkf$par
+  fit.stats$coef
+  ## Plot the flow data together with fitted local levels:
+  plot(y,type='l')
+  lines(fitted(fit.stats), col = "green")
+  lines(ts(fkf.obj$att[1, ], start = start(y), frequency = frequency(y)), col = "blue")
+  
+  residual[r_id,] = abs(fkf.obj$att[1, ] - y)
+  #legend("top", c("Nile flow data", "Local level (StructTS)", "Local level (fkf)"),col = c("black", "green", "blue"), lty = 1)
+}
+write.matrix(resiting,file="abc.txt")
