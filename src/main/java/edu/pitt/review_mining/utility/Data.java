@@ -14,24 +14,50 @@ import org.json.JSONTokener;
 public class Data {
 	static void processAmazon(String product_id) {
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\user_dedup.json.gz2")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\complete.json")));
 			String line = null;
 			StringBuilder sb = new StringBuilder();
 			while (null != (line = reader.readLine())) {
 				JSONTokener tokener = new JSONTokener(line);
 				JSONObject obj = new JSONObject(tokener);
 				String asin = obj.getString("asin");
+				//System.out.println(line);
 				if (product_id.equals(asin)) {
+					System.out.println(line);
 					String reviewText = obj.getString("reviewText");
 					long unixReviewTime = obj.getLong("unixReviewTime");
 					int rating = (int) (obj.getDouble("overall"));
-					sb.append(rating).append("\t").append(unixReviewTime).append("\t").append(reviewText).append("\t")
-							.append(unixReviewTime).append("\n");
+					sb.append(rating).append("\t").append(unixReviewTime).append("\t").append(reviewText).append("\n");
 				}
 			}
 			reader.close();
 
-			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("C:\\git\\" + product_id + ".txt")));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("C:\\git\\" + product_id + "_plain.txt")));
+			writer.write(sb.toString());
+			writer.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	static void processAmazon2() {
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\B000CNB4LE.txt")));
+			String line = null;
+			StringBuilder sb = new StringBuilder();
+			while (null != (line = reader.readLine())) {
+				String[] items = line.split("\t");
+				sb.append(items[0]).append("\t").append(items[1]).append("\n");
+			}
+			reader.close();
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("C:\\git\\B000CNB4LE_plain.txt")));
+			writer.write(sb.toString());
+			writer.close();
 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -42,6 +68,6 @@ public class Data {
 	}
 
 	public static void main(String[] args) {
-		processAmazon("B000CNB4LE");
+		processAmazon2();
 	}
 }

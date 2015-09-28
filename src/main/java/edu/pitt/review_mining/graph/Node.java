@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import edu.pitt.review_mining.utility.DependencyType;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 
-public class Node implements Cloneable,Serializable {
+public class Node implements Cloneable, Serializable {
 	/**
 	 * 
 	 */
@@ -92,15 +92,15 @@ public class Node implements Cloneable,Serializable {
 
 	// gov -> dep
 	@Deprecated
-	public Edge addEdge(Node node, DependencyType type, boolean is_self_gov) {
+	public Edge addEdge(Node node, DependencyType type, boolean is_self_gov, double review_weight) {
 		Edge e = null;
 		if (is_self_gov) { // self is gov and node is dep so build edge from gov
 							// to dep
-			e = new Edge(this, node, type);
+			e = new Edge(this, node, type, review_weight);
 			this._outcoming_edges.add(e);
 			node._incoming_edges.add(e);
 		} else {
-			e = new Edge(node, this, type);
+			e = new Edge(node, this, type, review_weight);
 			this._incoming_edges.add(e);
 			node._outcoming_edges.add(e);
 		}

@@ -7,6 +7,7 @@ public class CLI {
 
 	public static void main(String[] args) throws Exception {
 		Graph graph = Report.readData(Config.PATH_TEXT);
-		Report.intepretGraph2(graph);
+		Report.intepretGraph(graph);
+		//Report.intepretGraph2(graph);
 	}
 }

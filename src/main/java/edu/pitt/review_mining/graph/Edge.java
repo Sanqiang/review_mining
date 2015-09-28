@@ -16,11 +16,13 @@ public class Edge implements Cloneable, Serializable {
 	private int _features = 0;
 	// private int _count;
 	private HashMap<Integer, HashSet<Integer>> _occurs = null;
+	private double _review_weight;
 
-	public Edge(Node gov, Node dep, DependencyType type) {
+	public Edge(Node gov, Node dep, DependencyType type, double review_weight) {
 		this._type = type;
 		this._dep = dep;
 		this._gov = gov;
+		this._review_weight = review_weight;
 		this._occurs = new HashMap<>();
 	}
 	
@@ -38,6 +40,10 @@ public class Edge implements Cloneable, Serializable {
 
 	public DependencyType getDependencyType() {
 		return _type;
+	}
+	
+	public double getReviewWeight() {
+		return this._review_weight;
 	}
 
 	public int getCount() {

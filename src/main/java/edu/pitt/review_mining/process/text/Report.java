@@ -21,21 +21,34 @@ import com.eclipsesource.json.JsonValue;
 import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
+import edu.pitt.review_mining.process.rating.KalmanUtility;
 import edu.pitt.review_mining.utility.Config;
 import edu.pitt.review_mining.utility.Helper;
 import edu.pitt.review_mining.utility.PartOfSpeech;
 
 public class Report {
+
 	public static Graph readData(String path) {
+		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20);
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
 		try {
 			reader = new BufferedReader(new FileReader(new File(path)));
-			String review = null;
-			int review_id = 0;
-			while ((review = reader.readLine()) != null) {
-				process.processReviews(review, review_id++);
-				System.out.println(review);
+			String line = null;
+			int review_idx = 0;
+			while ((line = reader.readLine()) != null) {
+				String[] items = line.split("\t");
+				if (items.length == 3) {
+					int rating = Integer.parseInt(items[0]);
+					if (rating != 1) {
+						continue;
+					}
+					String review = items[2];
+					double review_weight = ku.getWeight(review_idx, rating);
+					process.processReviews(review, review_idx++, review_weight);
+				} else {
+					System.err.println(line);
+				}
 			}
 			reader.close();
 		} catch (IOException e) {
@@ -59,22 +72,34 @@ public class Report {
 					obj.add("lemma", node.getLemma());
 					List<JsonObject> arr_relation = new ArrayList<>();
 					int total_count = 0;
+					double review_weight = 0;
 					for (Edge edge : node.getOutcomingEdges()) {
 						Node another_node = edge.getOtherNode(node);
 						JsonObject rela = new JsonObject();
 						rela.add("lemma", another_node.getLemma());
 						rela.add("rel", edge.getDependencyType().name());
 						rela.add("freq", edge.getCount());
+						rela.add("r_weight", edge.getReviewWeight());
 						total_count += edge.getCount();
+						review_weight += edge.getReviewWeight();
 						arr_relation.add(rela);
 					}
 					Collections.sort(arr_relation, new Comparator<JsonObject>() {
 
 						@Override
 						public int compare(JsonObject o1, JsonObject o2) {
-							int freq1 = o1.get("freq").asInt();
-							int freq2 = o2.get("freq").asInt();
-							return freq2 - freq1;
+							// int freq1 = o1.get("freq").asInt();
+							// int freq2 = o2.get("freq").asInt();
+							// return freq2 - freq1;
+							double r_weight1 = o1.get("r_weight").asDouble();
+							double r_weight2 = o2.get("r_weight").asDouble();
+							if (r_weight2 > r_weight1) {
+								return 1;
+							}else if (r_weight2 > r_weight1) {
+								return -1;
+							}else {
+								return 0;
+							}
 						}
 					});
 					JsonArray arr_json = new JsonArray();
@@ -84,15 +109,29 @@ public class Report {
 					obj.add("rels", arr_json);
 					arr.add(obj);
 					obj.add("total_count", total_count);
+					review_weight /= node.getOutcomingEdges().size();
+					if (Double.isNaN(review_weight)) {
+						review_weight = 0d;
+					}
+					obj.add("r_weight", review_weight);
 				}
 			}
 			Collections.sort(arr, new Comparator<JsonObject>() {
 
 				@Override
 				public int compare(JsonObject o1, JsonObject o2) {
-					int total_count1 = o1.get("total_count").asInt();
-					int total_count2 = o2.get("total_count").asInt();
-					return total_count2 - total_count1;
+					// int total_count1 = o1.get("total_count").asInt();
+					// int total_count2 = o2.get("total_count").asInt();
+					// return total_count2 - total_count1;
+					double r_weight1 = o1.get("r_weight").asDouble();
+					double r_weight2 = o2.get("r_weight").asDouble();
+					if (r_weight2 > r_weight1) {
+						return 1;
+					}else if (r_weight2 > r_weight1) {
+						return -1;
+					}else {
+						return 0;
+					}
 				}
 			});
 			JsonArray arr_json = new JsonArray();

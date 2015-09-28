@@ -70,12 +70,12 @@ public class Graph implements Serializable {
 		return this._edge_occurs;
 	}
 
-	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx) {
+	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx,double review_weight) {
 		return createEdge(gov, dep, type, sentence_idx, word_idx, 0);
 	}
 
-	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx, int pos_feature) {
-		Edge e = new Edge(gov, dep, type);
+	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx, int pos_feature,double review_weight) {
+		Edge e = new Edge(gov, dep, type,review_weight);
 		e.setFeatures(pos_feature);
 		if (_edges.containsKey(e.getIdentify())) {
 			e = _edges.get(e.getIdentify());

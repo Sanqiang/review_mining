@@ -1,12 +1,19 @@
 require("FKF")
 require("MASS")
 
-rating = read.table("C:\\Users\\phd2\\Dropbox\\eclipse_space\\ano_detect\\the-halal-guys-new-york-2.txt")[1:1000,1]
-rating = matrix(rating,25)
+rating = read.table("C:/git/B000CNB4LE.txt",sep="\t",col.names=c("rating","time","text"),quote = "")
+rating = rating[order(rating[,2]),]
+rating = rating[16:dim(rating)[1],]
+write.table(rating,"B000CNB4LE_sorted.txt",row.names = FALSE,col.names = FALSE,quote = FALSE,sep = "\t")
+
+
+
+rating = rating[,1]
+rating = matrix(rating,20)
 
 
 aggre <- function(row){
-  c(length(which(row == 5)),length(which(row == 4)),length(which(row == 3)),length(which(row == 2)),length(which(row == 1)))/length(row)
+  c(length(which(row == 1)),length(which(row == 2)),length(which(row == 3)),length(which(row == 4)),length(which(row == 5)))/length(row)
 }
 
 ## <--------------------------------------------------------------------------->
@@ -41,10 +48,12 @@ for(r_id in 1:5){
   fit.stats$coef
   ## Plot the flow data together with fitted local levels:
   plot(y,type='l')
-  lines(fitted(fit.stats), col = "green")
+  #lines(fitted(fit.stats), col = "green")
   lines(ts(fkf.obj$att[1, ], start = start(y), frequency = frequency(y)), col = "blue")
   
   residual[r_id,] = abs(fkf.obj$att[1, ] - y)
   #legend("top", c("Nile flow data", "Local level (StructTS)", "Local level (fkf)"),col = c("black", "green", "blue"), lty = 1)
+  #break
 }
-write.matrix(resiting,file="abc.txt")
+write.matrix(residual,file="weight.txt")
+
