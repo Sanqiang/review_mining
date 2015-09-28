@@ -24,7 +24,6 @@ import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.process.rating.KalmanUtility;
 import edu.pitt.review_mining.utility.Config;
 import edu.pitt.review_mining.utility.Helper;
-import edu.pitt.review_mining.utility.PartOfSpeech;
 
 public class Report {
 
@@ -62,12 +61,11 @@ public class Report {
 	// report 1: graph presentation
 	public static void intepretGraph(Graph graph) {
 		try {
-
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("result.txt")));
 			Collection<Node> nodes = graph.getNodes();
 			ArrayList<JsonObject> arr = new ArrayList<>();
 			for (Node node : nodes) {
-				if (node.getPOS() == PartOfSpeech.NOUN) {
+				//if (node.getPOS() == PartOfSpeech.NOUN) {
 					JsonObject obj = new JsonObject();
 					obj.add("lemma", node.getLemma());
 					List<JsonObject> arr_relation = new ArrayList<>();
@@ -114,7 +112,7 @@ public class Report {
 						review_weight = 0d;
 					}
 					obj.add("r_weight", review_weight);
-				}
+				//}
 			}
 			Collections.sort(arr, new Comparator<JsonObject>() {
 

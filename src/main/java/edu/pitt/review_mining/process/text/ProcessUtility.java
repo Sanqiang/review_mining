@@ -167,6 +167,20 @@ public class ProcessUtility {
 
 		// refine rule
 		for (Node node : local_graph.getNodes()) {
+			if (node.getPOS() == PartOfSpeech.VERB) {
+				for (Edge edge : node.getOutcomingEdges()) {
+					Node another_node = edge.getOtherNode(node);
+					// DependencyType.XComp : food smells good.
+					if (edge.getDependencyType() == DependencyType.Complement
+							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						Node node_global = this._graph.createNode(node);
+						Node another_node_global = this._graph.createNode(another_node);
+						this._graph.createEdge(node_global, another_node_global, DependencyType.XComplement, review_id,
+								node.getSentenceLoc(), pos_feature, review_weight);
+					}
+				}
+			}
+
 			if (node.getPOS() == PartOfSpeech.NOUN) {
 				// for out coming edges
 				for (Edge edge : node.getOutcomingEdges()) {

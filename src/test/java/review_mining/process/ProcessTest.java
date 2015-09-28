@@ -33,7 +33,7 @@ public class ProcessTest {
 	}
 
 	// test 4+ types of rules
-	// @Test
+	@Test
 	public void testRule() {
 		ProcessUtility pu = new ProcessUtility();
 		// SingleAmod, //red food is good.
@@ -46,17 +46,19 @@ public class ProcessTest {
 		// Graph graph = pu.generateDependencyGraph("chicken is delicious
 		// food.", 0,0);
 		// Graph graph = pu.generateDependencyGraph("food is delicious.", 0,0);
-		Graph graph = pu.generateDependencyGraph("the chicken and rice with white sauce is delicious.", 0, 0, 0);
+		// Graph graph = pu.generateDependencyGraph("the chicken and rice with
+		// white sauce is delicious.", 0, 0, 0);
+		Graph graph = pu.generateDependencyGraph("Now that it's made from concentrate it tastes weak and spoiled.", 0, 0, 0);
 		for (Node node : graph.getNodes()) {
-			if (node.getPOS() == PartOfSpeech.NOUN) {
-				System.out.println();
-				System.out.print(node.getLemma() + ":");
-				for (Edge edge : node.getOutcomingEdges()) {
-					Node another_node = edge.getOtherNode(node);
-					System.out.print(edge.getDependencyType().name() + ":");
-					System.out.print(another_node.getLemma() + "\t");
-				}
+			// if (node.getPOS() == PartOfSpeech.NOUN) {
+			System.out.println();
+			System.out.print(node.getLemma() + ":");
+			for (Edge edge : node.getOutcomingEdges()) {
+				Node another_node = edge.getOtherNode(node);
+				System.out.print(edge.getDependencyType().name() + ":");
+				System.out.print(another_node.getLemma() + "\t");
 			}
+			// }
 		}
 		assert(true);
 	}
@@ -133,7 +135,7 @@ public class ProcessTest {
 	// assert(true);
 	// }
 
-	@Test
+	// @Test
 	public void testFilterSentence() {
 		ProcessUtility word = new ProcessUtility();
 		// word.processSentence("red red sauce is pretty good, but I like white

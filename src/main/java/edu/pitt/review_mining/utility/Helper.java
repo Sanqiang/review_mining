@@ -60,6 +60,11 @@ public class Helper {
 		case "conj":
 			mappedRelType = DependencyType.Conjunction;
 			break;
+		case "acomp":
+		case "ccomp":
+		case "xcomp":
+			mappedRelType = DependencyType.Complement;
+			break;
 		default:
 			mappedRelType = DependencyType.OtherLocalType;
 			break;
@@ -93,7 +98,7 @@ public class Helper {
 		}
 		return val;
 	}
-	
+
 	public static boolean getBit(int val, int pos) {
 		return (val >> pos) % 2 > 0;
 	}
