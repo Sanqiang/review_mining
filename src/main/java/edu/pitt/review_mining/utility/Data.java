@@ -55,7 +55,7 @@ public class Data {
 			}
 			reader.close();
 
-			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("C:\\git\\B000CNB4LE_plain.txt")));
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("C:\\git\\B000CNB4LE__simple_plain.txt")));
 			writer.write(sb.toString());
 			writer.close();
 

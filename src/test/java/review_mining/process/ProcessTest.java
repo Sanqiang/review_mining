@@ -48,8 +48,11 @@ public class ProcessTest {
 		// Graph graph = pu.generateDependencyGraph("food is delicious.", 0,0);
 		// Graph graph = pu.generateDependencyGraph("the chicken and rice with
 		// white sauce is delicious.", 0, 0, 0);
-		Graph graph = pu.generateDependencyGraph("Now that it's made from concentrate it tastes weak and spoiled.", 0, 0, 0);
-		for (Node node : graph.getNodes()) {
+		pu.generateDependencyGraph(
+				"I am from Jamaica, and I had coconuts straight from the trees and this does not taste natural at all, as a matter of fact this is the worst tasting coconut water I have ever tasted.  I was very disappointed, Zico does not come close. I have to give VITA COCO FIVE STAR and this None."
+						.toLowerCase(),
+				0, 0, 0);
+		for (Node node : pu.getGraph().getNodes()) {
 			// if (node.getPOS() == PartOfSpeech.NOUN) {
 			System.out.println();
 			System.out.print(node.getLemma() + ":");
@@ -67,22 +70,7 @@ public class ProcessTest {
 	public void testProcessReview() {
 		String review = "This restaurant deserves all the success and lines out its door. One walks in and is instantly greeted by a giant chalkboard of food items listed divided into  to meats, salads, sandwiches, and sides. I decisively decided on their steak sandwich with filet and then a 6oz meat plate of flank (and it comes with a small side salad, toast, and tiny portion of grilled veggies). Depending on the cuts of meat prices vary. Strip steak is the cheapest to filet being the priciest. Ordered both meats to be cooked medium rare. ";
 		ProcessUtility process = new ProcessUtility();
-		ArrayList<Node> candidates_nodes = process.processReviews(review, 0, 0);
-		Collections.sort(candidates_nodes, new Comparator<Node>() {
-			@Override
-			public int compare(Node o1, Node o2) {
-				o1.setScore(Double.isNaN(o1.getScore()) ? 0 : o1.getScore());
-				o2.setScore(Double.isNaN(o2.getScore()) ? 0 : o2.getScore());
-				if (o2.getScore() >= o1.getScore()) {
-					return 1;
-				} else {
-					return -1;
-				}
-			}
-		});
-		for (Node node : candidates_nodes) {
-			System.out.println(node.getLemma() + " : " + node.getScore());
-		}
+		process.processReviews(review, 0, 0);
 		assert(true);
 
 	}

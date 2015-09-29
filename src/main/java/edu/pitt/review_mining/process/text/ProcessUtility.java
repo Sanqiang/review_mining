@@ -47,8 +47,7 @@ public class ProcessUtility {
 	}
 
 	// CLI function
-	public ArrayList<Node> processReviews(String review, int review_id, double review_weight) {
-		ArrayList<Node> candidates_nodes = new ArrayList<>();
+	public void processReviews(String review, int review_id, double review_weight) {
 		String[] paragraphs = review.split("\n");
 		for (String paragraph : paragraphs) {
 			if (paragraph.length() > 0) {
@@ -60,16 +59,14 @@ public class ProcessUtility {
 					} else if (i == sentences.size() - 1) {
 						pos_feature = Helper.setBit(pos_feature, 1, true);
 					}
-					candidates_nodes.addAll(
-							processSentence(sentences.get(i).toLowerCase(), review_id, pos_feature, review_weight));
+					processSentence(sentences.get(i).toLowerCase(), review_id, pos_feature, review_weight);
 				}
 			}
 		}
-		return candidates_nodes;
 	}
 
 	// process the sentence CLI
-	public ArrayList<Node> processSentence(String sentence, int review_id, int pos_feature, double review_weight) {
+	public void processSentence(String sentence, int review_id, int pos_feature, double review_weight) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		// does detect phrase for now, use dependency parser of compound
 		// relationship
@@ -91,7 +88,6 @@ public class ProcessUtility {
 		// so instead use
 		generateDependencyGraph(sentence, review_id, pos_feature, review_weight);
 		// generateDependencyGraph(sentence, review_id, pos_feature);
-		return candidates_nodes;
 	}
 
 	public ArrayList<String> segSentence(String paragraph) {
@@ -134,7 +130,7 @@ public class ProcessUtility {
 	}
 
 	// generate graph of dependency relation
-	public Graph generateDependencyGraph(String clause, int review_id, int pos_feature, double review_weight) {
+	public void generateDependencyGraph(String clause, int review_id, int pos_feature, double review_weight) {
 		Graph local_graph = new Graph();
 		DependencyParser parser = Module.getInst().getDependencyParser();
 		MaxentTagger tagger = Module.getInst().getTagger();
@@ -234,8 +230,6 @@ public class ProcessUtility {
 				}
 			}
 		}
-
-		return _graph;
 	}
 
 	// preprocess: tokenize by tagger / phrase detection by xx xx NOUN / xx NOUN
@@ -377,12 +371,13 @@ public class ProcessUtility {
 	}
 
 	@Deprecated
-	public ArrayList<Node> getCenterWordCandidatesFromGraph(String clause) {
-		return getCenterWordCandidatesFromGraph(generateDependencyGraph(clause, 0, 0, 0));
+	public void getCenterWordCandidatesFromGraph(String clause) {
+		generateDependencyGraph(clause, 0, 0, 0);
+		getCenterWordCandidatesFromGraph(this._graph);
 	}
 
 	@Deprecated
-	public ArrayList<Node> getCenterWordCandidatesFromGraph(Graph graph) {
+	public void getCenterWordCandidatesFromGraph(Graph graph) {
 		ArrayList<Node> candidates_nodes = new ArrayList<>();
 		Collection<Node> nodes = graph.getNodes();
 		for (Node node : nodes) {
@@ -399,7 +394,6 @@ public class ProcessUtility {
 		// - (o1.getIncomingEdges().size() + o1.getOutcomingEdges().size());
 		// }
 		// });
-		return candidates_nodes;
 	}
 
 }
