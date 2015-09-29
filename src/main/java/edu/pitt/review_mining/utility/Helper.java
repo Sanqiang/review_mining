@@ -46,15 +46,18 @@ public class Helper {
 		case "amod":
 			mappedRelType = DependencyType.AdjectivalModifier;
 			break;
+		case "dep":
+			mappedRelType = DependencyType.Dependent;
+			break;
 		case "nn":
 			mappedRelType = DependencyType.NounCompoundModifier;
 			break;
 		case "nsubj":
 			mappedRelType = DependencyType.NominalSubject;
 			break;
-		case "dobj":
-			mappedRelType = DependencyType.DirectObject;
-			break;
+		//case "dobj":
+		//	mappedRelType = DependencyType.DirectObject;
+		//	break;
 		case "conj:and":
 		case "compound":
 		case "conj":
@@ -63,6 +66,9 @@ public class Helper {
 		case "acomp":
 		case "ccomp":
 		case "xcomp":
+		case "dobj":
+		case "iobj":
+		case "pobj":
 			mappedRelType = DependencyType.Complement;
 			break;
 		default:

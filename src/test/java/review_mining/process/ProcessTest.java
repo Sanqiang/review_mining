@@ -48,10 +48,9 @@ public class ProcessTest {
 		// Graph graph = pu.generateDependencyGraph("food is delicious.", 0,0);
 		// Graph graph = pu.generateDependencyGraph("the chicken and rice with
 		// white sauce is delicious.", 0, 0, 0);
-		pu.generateDependencyGraph(
-				"I am from Jamaica, and I had coconuts straight from the trees and this does not taste natural at all, as a matter of fact this is the worst tasting coconut water I have ever tasted.  I was very disappointed, Zico does not come close. I have to give VITA COCO FIVE STAR and this None."
-						.toLowerCase(),
-				0, 0, 0);
+		pu.processReviews(
+				"It tasted very bland and has a little sour taste to it.",
+				0, 0);
 		for (Node node : pu.getGraph().getNodes()) {
 			// if (node.getPOS() == PartOfSpeech.NOUN) {
 			System.out.println();

@@ -8,6 +8,7 @@ public enum DependencyType {
 	DirectObject, //dobj in Stanford
 	Conjunction, //conj in Stanford
 	Complement,
+	Dependent,
 	//MISCELLANEOUS ONE, FOR UNINTERESTING AND UNMAPPED RELATIONS
 	OtherLocalType,
 	

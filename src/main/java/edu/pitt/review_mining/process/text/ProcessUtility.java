@@ -164,6 +164,7 @@ public class ProcessUtility {
 		// refine rule
 		for (Node node : local_graph.getNodes()) {
 			if (node.getPOS() == PartOfSpeech.VERB) {
+				// DependencyType.XComplement : food smells good.
 				for (Edge edge : node.getOutcomingEdges()) {
 					Node another_node = edge.getOtherNode(node);
 					// DependencyType.XComp : food smells good.
@@ -204,6 +205,15 @@ public class ProcessUtility {
 				// for in coming edges
 				for (Edge edge : node.getIncomingEdges()) {
 					Node another_node = edge.getOtherNode(node);
+					// DependencyType.SingleAmod : red food is good.
+					if (edge.getDependencyType() == DependencyType.Dependent
+							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						Node node_global = this._graph.createNode(node);
+						Node another_node_global = this._graph.createNode(another_node);
+						this._graph.createEdge(node_global, another_node_global, DependencyType.AdjectivalModifier, review_id,
+								node.getSentenceLoc(), pos_feature, review_weight);
+					}
+
 					// DependencyType.AmodSubj chicken is delicious food.
 					if (edge.getDependencyType() == DependencyType.NominalSubject
 							&& another_node.getPOS() == PartOfSpeech.NOUN) {
