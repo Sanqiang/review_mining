@@ -6,6 +6,7 @@ import java.io.FileNotFoundException;
 import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
+import net.didion.jwnl.data.IndexWordSet;
 import net.didion.jwnl.data.POS;
 import net.didion.jwnl.data.PointerType;
 import net.didion.jwnl.data.relationship.Relationship;
@@ -23,11 +24,27 @@ public class WordNetUtility {
 		}
 	}
 
+	public boolean canBeNoun(String word) {
+		try {
+			IndexWordSet idxWord = Dictionary.getInstance().lookupAllIndexWords(word);
+			IndexWord[] words = idxWord.getIndexWordArray();
+			for (int i = 0; i < words.length; i++) {
+				if (words[i].getPOS() == POS.NOUN) {
+					return true;
+				}
+			}
+		} catch (JWNLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public int measureNounSimilarity(String word1, String word2) {
 		try {
 			IndexWord iword1 = Dictionary.getInstance().lookupIndexWord(POS.NOUN, word1);
 			IndexWord iword2 = Dictionary.getInstance().lookupIndexWord(POS.NOUN, word2);
-			
+
 			int min_depth = Integer.MAX_VALUE;
 			for (int i = 1; i <= iword1.getSenseCount(); i++) {
 				for (int j = 1; j <= iword2.getSenseCount(); j++) {
