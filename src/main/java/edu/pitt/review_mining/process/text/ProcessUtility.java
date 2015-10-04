@@ -169,7 +169,7 @@ public class ProcessUtility {
 					Node another_node = edge.getOtherNode(node);
 					// DependencyType.XComp : food smells good.
 					if (edge.getDependencyType() == DependencyType.Complement
-							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+							/*&& another_node.getPOS() == PartOfSpeech.ADJECTIVE*/) {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.XComplement, review_id,
