@@ -43,6 +43,9 @@ public class Helper {
 	public static DependencyType mapRelationTypes(String dependencyShortName) {
 		DependencyType mappedRelType = DependencyType.OtherLocalType;
 		switch (dependencyShortName) {
+		case "nmod":
+			mappedRelType = DependencyType.NounModifier;
+			break;
 		case "amod":
 			mappedRelType = DependencyType.AdjectivalModifier;
 			break;

@@ -71,7 +71,7 @@ public class ProcessUtility {
 		// does detect phrase for now, use dependency parser of compound
 		// relationship
 		// sentence = preprocessSentence(sentence);
-		sentence = filterSentence(sentence);
+		//sentence = filterSentence(sentence);
 		// split tree break dependency parser so deprecated
 		// ArrayList<Tree> trees = splitTree(tree);
 		// for (int i = trees.size() - 1; i >= 0; i--) {
@@ -173,6 +173,11 @@ public class ProcessUtility {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.XComplement, review_id,
+								node.getSentenceLoc(), pos_feature, review_weight);
+					}else if (edge.getDependencyType() == DependencyType.NounModifier) {
+						Node node_global = this._graph.createNode(node);
+						Node another_node_global = this._graph.createNode(another_node);
+						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleNmod, review_id,
 								node.getSentenceLoc(), pos_feature, review_weight);
 					}
 				}

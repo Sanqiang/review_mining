@@ -9,11 +9,13 @@ public enum DependencyType {
 	Conjunction, //conj in Stanford
 	Complement,
 	Dependent,
+	NounModifier,
 	//MISCELLANEOUS ONE, FOR UNINTERESTING AND UNMAPPED RELATIONS
 	OtherLocalType,
 	
 	///global type
-	XComplement,
+	XComplement, //it tastes good.
+	SingleNmod, //It literally taste like plastic.
 	SingleAmod, //red food is good.
 	AmodSubj, //chicken is delicious food.
 	SingleSubj, //food is delicious.

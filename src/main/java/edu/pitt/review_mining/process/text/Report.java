@@ -58,6 +58,38 @@ public class Report {
 		return process.getGraph();
 	}
 
+	
+	public static void generateReviewReport(String path) {
+		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20);
+		try {
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("result.txt")));
+			StringBuilder sb = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new FileReader(new File(path)));
+			String line = null;
+			int review_idx = 0;
+			while ((line = reader.readLine()) != null) {
+				String[] items = line.split("\t");
+				if (items.length == 3) {
+					int rating = Integer.parseInt(items[0]);
+					if (rating != 1) {
+						continue;
+					}
+					String review = items[2];
+					double review_weight = ku.getWeight(review_idx, rating);
+					sb.append(review_weight).append("\t").append(review).append("\n");
+					++review_idx;
+				} else {
+					System.err.println(line);
+				}
+			}
+			reader.close();
+			writer.write(sb.toString());
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	// report 1: graph presentation
 	public static void intepretGraph(Graph graph) {
 		try {

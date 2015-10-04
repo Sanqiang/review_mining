@@ -49,7 +49,7 @@ public class ProcessTest {
 		// Graph graph = pu.generateDependencyGraph("the chicken and rice with
 		// white sauce is delicious.", 0, 0, 0);
 		pu.processReviews(
-				"It tasted very bland and has a little sour taste to it.",
+				"It literally taste like plastic.",
 				0, 0);
 		for (Node node : pu.getGraph().getNodes()) {
 			// if (node.getPOS() == PartOfSpeech.NOUN) {

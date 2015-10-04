@@ -8,7 +8,7 @@
 	<packaging>jar</packaging>
 
 	<name>review_mining</name>
-	<url>http://maven.apache.org</url>
+	<url>http://pitt.edu</url>
 
 	<properties>
 		<nd4j.version>0.0.3.5.5.3</nd4j.version>
@@ -22,6 +22,18 @@
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
 			<version>20141113</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-core</artifactId>
+			<version>0.9</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.mahout</groupId>
+			<artifactId>mahout-math</artifactId>
+			<version>0.11.0</version>
 		</dependency>
 
 
