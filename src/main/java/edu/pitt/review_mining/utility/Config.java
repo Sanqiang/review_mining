@@ -7,6 +7,10 @@ public class Config {
 	public final static String PATH_TEXT = "r/B000CNB4LE_sorted.txt";
 	public final static String PATH_WEIGHT = "r/weight.txt";
 
+	// for wordnet
+	public final static String PATH_JWNL_CONFIG = "jwnl_property.xml";
+	public final static String PATH_WN_SENT = "wn_sent/SentiWordNet_3.0.0_20130122.txt";
+
 	// for word2vec
 	@Deprecated
 	public final static String PATH_AMAZON_REVIEW = "C:/Downloads/complete.json";
@@ -29,8 +33,8 @@ public class Config {
 	public final static String[] TAGS_FILTER_OUT = { "PP", "INTJ" };
 
 	// for report
-	public final static String PATH_REPORT_GRAPH  = "repot_graph.json";
-	public final static String PATH_REPORT_ASPECT  = "repot_aspect.json";
-	public final static double[] WEIGHT_FORWARD_BACKWARD = { 0.50049, 0.25024, 0.12512, 0.062561, 0.031281, 0.01564, 0.0078201,
-			0.0039101, 0.001955, 0.00097752 };
+	public final static String PATH_REPORT_GRAPH = "repot_graph.json";
+	public final static String PATH_REPORT_ASPECT = "repot_aspect.json";
+	public final static double[] WEIGHT_FORWARD_BACKWARD = { 0.50049, 0.25024, 0.12512, 0.062561, 0.031281, 0.01564,
+			0.0078201, 0.0039101, 0.001955, 0.00097752 };
 }

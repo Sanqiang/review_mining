@@ -3,6 +3,7 @@ package edu.pitt.review_mining.process.text;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
+import edu.pitt.review_mining.utility.Config;
 import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
@@ -18,7 +19,7 @@ public class WordNetUtility {
 
 	public WordNetUtility() {
 		try {
-			JWNL.initialize(new FileInputStream("jwnl_property.xml"));
+			JWNL.initialize(new FileInputStream(Config.PATH_JWNL_CONFIG));
 		} catch (FileNotFoundException | JWNLException e) {
 			e.printStackTrace();
 		}
