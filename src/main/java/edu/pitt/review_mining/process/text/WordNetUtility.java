@@ -2,8 +2,12 @@ package edu.pitt.review_mining.process.text;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.util.Iterator;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import edu.pitt.review_mining.utility.Config;
+import edu.pitt.review_mining.utility.Stemmer;
 import net.didion.jwnl.JWNL;
 import net.didion.jwnl.JWNLException;
 import net.didion.jwnl.data.IndexWord;
@@ -25,6 +29,7 @@ public class WordNetUtility {
 		}
 	}
 
+	@Deprecated
 	public boolean canBeNoun(String word) {
 		try {
 			IndexWordSet idxWord = Dictionary.getInstance().lookupAllIndexWords(word);
@@ -39,6 +44,40 @@ public class WordNetUtility {
 			e.printStackTrace();
 		}
 		return false;
+	}
+
+	public double isFirstNoun(String word1, String word2) {
+		try {
+
+			IndexWord[] idxWords1 = Dictionary.getInstance().lookupAllIndexWords(word1).getIndexWordArray(),
+					idxWords1ex = Dictionary.getInstance().lookupAllIndexWords(Stemmer.getStem(word1))
+							.getIndexWordArray();
+			IndexWord[] idxWords2 = Dictionary.getInstance().lookupAllIndexWords(word2).getIndexWordArray(),
+					idxWords2ex = Dictionary.getInstance().lookupAllIndexWords(Stemmer.getStem(word2))
+							.getIndexWordArray();
+			idxWords1 = ArrayUtils.addAll(idxWords1, idxWords1ex);
+			idxWords2 = ArrayUtils.addAll(idxWords2, idxWords2ex);
+			double score1 = 0d, score2 = 0d, len1 = 0d, len2 = 0d;
+			for (int i = 0; i < idxWords1.length; i++) {
+				if (idxWords1[i].getPOS() == POS.NOUN) {
+					score1 += idxWords1[i].getSenseCount();
+				}
+				len1 += idxWords1[i].getSenseCount();
+			}
+			score1 /= len1;
+			for (int i = 0; i < idxWords2.length; i++) {
+				if (idxWords2[i].getPOS() == POS.NOUN) {
+					score2 += idxWords2[i].getSenseCount();
+				}
+				len2 +=  idxWords2[i].getSenseCount();
+			}
+			score2 /= len2;
+			return score1 - score2;
+		} catch (JWNLException e) {
+			e.printStackTrace();
+			return 0;
+		}
+
 	}
 
 	public int measureNounSimilarity(String word1, String word2) {

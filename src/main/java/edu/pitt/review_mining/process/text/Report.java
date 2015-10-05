@@ -12,7 +12,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -23,7 +28,9 @@ import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
 import edu.pitt.review_mining.process.rating.KalmanUtility;
 import edu.pitt.review_mining.utility.Config;
+import edu.pitt.review_mining.utility.DependencyType;
 import edu.pitt.review_mining.utility.Helper;
+import edu.pitt.review_mining.utility.Stemmer;
 
 public class Report {
 
@@ -58,7 +65,6 @@ public class Report {
 		return process.getGraph();
 	}
 
-	
 	public static void generateReviewReport(String path) {
 		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20);
 		try {
@@ -89,62 +95,63 @@ public class Report {
 			e.printStackTrace();
 		}
 	}
-	
-	// report 1: graph presentation
-	public static void intepretGraph(Graph graph) {
+
+	// node level report
+	@Deprecated
+	public static void intepretGraphNode(Graph graph) {
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("result.txt")));
 			Collection<Node> nodes = graph.getNodes();
 			ArrayList<JsonObject> arr = new ArrayList<>();
 			for (Node node : nodes) {
-				//if (node.getPOS() == PartOfSpeech.NOUN) {
-					JsonObject obj = new JsonObject();
-					obj.add("lemma", node.getLemma());
-					List<JsonObject> arr_relation = new ArrayList<>();
-					int total_count = 0;
-					double review_weight = 0;
-					for (Edge edge : node.getOutcomingEdges()) {
-						Node another_node = edge.getOtherNode(node);
-						JsonObject rela = new JsonObject();
-						rela.add("lemma", another_node.getLemma());
-						rela.add("rel", edge.getDependencyType().name());
-						rela.add("freq", edge.getCount());
-						rela.add("r_weight", edge.getReviewWeight());
-						total_count += edge.getCount();
-						review_weight += edge.getReviewWeight();
-						arr_relation.add(rela);
-					}
-					Collections.sort(arr_relation, new Comparator<JsonObject>() {
+				// if (node.getPOS() == PartOfSpeech.NOUN) {
+				JsonObject obj = new JsonObject();
+				obj.add("lemma", node.getLemma());
+				List<JsonObject> arr_relation = new ArrayList<>();
+				int total_count = 0;
+				double review_weight = 0;
+				for (Edge edge : node.getOutcomingEdges()) {
+					Node another_node = edge.getOtherNode(node);
+					JsonObject rela = new JsonObject();
+					rela.add("lemma", another_node.getLemma());
+					rela.add("rel", edge.getDependencyType().name());
+					rela.add("freq", edge.getCount());
+					rela.add("r_weight", edge.getReviewWeight());
+					total_count += edge.getCount();
+					review_weight += edge.getReviewWeight();
+					arr_relation.add(rela);
+				}
+				Collections.sort(arr_relation, new Comparator<JsonObject>() {
 
-						@Override
-						public int compare(JsonObject o1, JsonObject o2) {
-							// int freq1 = o1.get("freq").asInt();
-							// int freq2 = o2.get("freq").asInt();
-							// return freq2 - freq1;
-							double r_weight1 = o1.get("r_weight").asDouble();
-							double r_weight2 = o2.get("r_weight").asDouble();
-							if (r_weight2 > r_weight1) {
-								return 1;
-							}else if (r_weight2 > r_weight1) {
-								return -1;
-							}else {
-								return 0;
-							}
+					@Override
+					public int compare(JsonObject o1, JsonObject o2) {
+						// int freq1 = o1.get("freq").asInt();
+						// int freq2 = o2.get("freq").asInt();
+						// return freq2 - freq1;
+						double r_weight1 = o1.get("r_weight").asDouble();
+						double r_weight2 = o2.get("r_weight").asDouble();
+						if (r_weight2 > r_weight1) {
+							return 1;
+						} else if (r_weight2 > r_weight1) {
+							return -1;
+						} else {
+							return 0;
 						}
-					});
-					JsonArray arr_json = new JsonArray();
-					for (JsonObject item_arr_relation : arr_relation) {
-						arr_json.add(item_arr_relation);
 					}
-					obj.add("rels", arr_json);
-					arr.add(obj);
-					obj.add("total_count", total_count);
-					review_weight /= node.getOutcomingEdges().size();
-					if (Double.isNaN(review_weight)) {
-						review_weight = 0d;
-					}
-					obj.add("r_weight", review_weight);
-				//}
+				});
+				JsonArray arr_json = new JsonArray();
+				for (JsonObject item_arr_relation : arr_relation) {
+					arr_json.add(item_arr_relation);
+				}
+				obj.add("rels", arr_json);
+				arr.add(obj);
+				obj.add("total_count", total_count);
+				review_weight /= node.getOutcomingEdges().size();
+				if (Double.isNaN(review_weight)) {
+					review_weight = 0d;
+				}
+				obj.add("r_weight", review_weight);
+				// }
 			}
 			Collections.sort(arr, new Comparator<JsonObject>() {
 
@@ -157,9 +164,9 @@ public class Report {
 					double r_weight2 = o2.get("r_weight").asDouble();
 					if (r_weight2 > r_weight1) {
 						return 1;
-					}else if (r_weight2 > r_weight1) {
+					} else if (r_weight2 > r_weight1) {
 						return -1;
-					}else {
+					} else {
 						return 0;
 					}
 				}
@@ -174,7 +181,72 @@ public class Report {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
 
+	// edge level report
+	public static void intepretGraphEdge(Graph graph, String output) {
+		try {
+			WordNetUtility word_net = new WordNetUtility();
+			SentiWordNetUtility sent_word_net = new SentiWordNetUtility(Config.PATH_WN_SENT);
+			TreeMap<String, ArrayList<JsonObject>> map_obj = new TreeMap<>();
+
+			Collection<Edge> edges = graph.getEdges();
+			for (Edge edge : edges) {
+				Node dep_node = edge.getDep();
+				Node gov_node = edge.getGov();
+
+				// make sure dep is aspect and gov is opinion
+				if (word_net.isFirstNoun(gov_node.getLemma(), dep_node.getLemma()) > 0) {
+					Node temp = dep_node;
+					dep_node = gov_node;
+					gov_node = temp;
+				}
+				String dep_lemma = Stemmer.getStem(dep_node.getLemma());
+				String gov_lemma = gov_node.getLemma();
+				double gov_sentiment = sent_word_net.extract(gov_lemma, gov_node.getPOS());
+				DependencyType type = edge.getDependencyType();
+				if (type == DependencyType.ConjAndComp) {
+					// TODO
+				} else {
+					JsonObject obj = new JsonObject();
+					obj/*.add("dep", dep_lemma)*/.add("gov", gov_lemma).add("sent", gov_sentiment).add("rel", type.name())
+							.add("freq", edge.getCount()).add("r_weight", edge.getReviewWeight());
+					if (!map_obj.containsKey(dep_lemma)) {
+						map_obj.put(dep_lemma, new ArrayList<>());
+					}
+					map_obj.get(dep_lemma).add(obj);
+				}
+			}
+
+			SortedSet<Map.Entry<String, ArrayList<JsonObject>>> map_obj2 = entriesSortedByValues(map_obj);
+
+			StringBuilder sb = new StringBuilder();
+			JsonArray arr_output = new JsonArray();
+			for (Map.Entry<String, ArrayList<JsonObject>> map_obj_entry : map_obj2) {
+				String dep = map_obj_entry.getKey();
+				double sent = 0;
+
+				JsonObject obj_output = new JsonObject();
+				JsonArray arr_output_temp = new JsonArray();
+				for (JsonObject obj : map_obj_entry.getValue()) {
+					sent += obj.get("sent").asDouble() * obj.get("freq").asInt();
+					arr_output_temp.add(obj);
+
+				}
+				sb.append(dep).append(",").append(sent).append("\n");
+				obj_output.add("dep", dep).add("sent", sent).add("list", arr_output_temp);
+				arr_output.add(obj_output);
+			}
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File(output)));
+			writer.write(sb.toString());
+			writer.close();
+			writer = new BufferedWriter(new FileWriter(new File(output + "_json")));
+			writer.write(arr_output.toString());
+			writer.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	// report 2 sentence presentation
@@ -254,5 +326,26 @@ public class Report {
 			e.printStackTrace();
 		}
 
+	}
+
+	private static SortedSet<Map.Entry<String, ArrayList<JsonObject>>> entriesSortedByValues(
+			Map<String, ArrayList<JsonObject>> map) {
+		SortedSet<Map.Entry<String, ArrayList<JsonObject>>> sortedEntries = new TreeSet<Map.Entry<String, ArrayList<JsonObject>>>(
+				new Comparator<Map.Entry<String, ArrayList<JsonObject>>>() {
+					@Override
+					public int compare(Map.Entry<String, ArrayList<JsonObject>> e1,
+							Map.Entry<String, ArrayList<JsonObject>> e2) {
+						int freq1 = 0, freq2 = 0;
+						for (JsonObject obj : e1.getValue()) {
+							freq1 += obj.get("freq").asInt();
+						}
+						for (JsonObject obj : e2.getValue()) {
+							freq2 += obj.get("freq").asInt();
+						}
+						return freq2 - freq1;
+					}
+				});
+		sortedEntries.addAll(map.entrySet());
+		return sortedEntries;
 	}
 }

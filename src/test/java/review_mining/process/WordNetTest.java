@@ -13,10 +13,17 @@ public class WordNetTest {
 		assert(true);
 	}
 	
-	@Test
-	public void testGetWord(){
+	//@Test
+	public void testCanBeNoun(){
 		WordNetUtility wn = new WordNetUtility();
 		System.out.println(wn.canBeNoun("disgusting"));
+		assert(true);
+	}
+	
+	@Test
+	public void testIsFirstNoun(){
+		WordNetUtility wn = new WordNetUtility();
+		System.out.println(wn.isFirstNoun("natural", "flavors"));
 		assert(true);
 	}
 

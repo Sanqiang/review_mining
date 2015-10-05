@@ -1,5 +1,6 @@
 package edu.pitt.review_mining.process.text;
 //    Copyright 2013 Petter Törnberg
+
 //
 //    This demo code has been kindly provided by Petter Törnberg <pettert@chalmers.se>
 //    for the SentiWordNet website.
@@ -24,12 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import edu.pitt.review_mining.utility.Config;
+import edu.pitt.review_mining.utility.PartOfSpeech;
 
-public class SentiWordNetDemoCode {
+public class SentiWordNetUtility {
 
 	private Map<String, Double> dictionary;
 
-	public SentiWordNetDemoCode(String pathToSWN) throws IOException {
+	public SentiWordNetUtility(String pathToSWN) throws IOException {
 		// This is our main dictionary representation
 		dictionary = new HashMap<String, Double>();
 
@@ -58,14 +60,11 @@ public class SentiWordNetDemoCode {
 
 					// Is it a valid line? Otherwise, through exception.
 					if (data.length != 6) {
-						throw new IllegalArgumentException(
-								"Incorrect tabulation format in file, line: "
-										+ lineNumber);
+						throw new IllegalArgumentException("Incorrect tabulation format in file, line: " + lineNumber);
 					}
 
 					// Calculate synset score as score = PosS - NegS
-					Double synsetScore = Double.parseDouble(data[2])
-							- Double.parseDouble(data[3]);
+					Double synsetScore = Double.parseDouble(data[2]) - Double.parseDouble(data[3]);
 
 					// Get all Synset terms
 					String[] synTermsSplit = data[4].split(" ");
@@ -74,8 +73,7 @@ public class SentiWordNetDemoCode {
 					for (String synTermSplit : synTermsSplit) {
 						// Get synterm and synterm rank
 						String[] synTermAndRank = synTermSplit.split("#");
-						String synTerm = synTermAndRank[0] + "#"
-								+ wordTypeMarker;
+						String synTerm = synTermAndRank[0] + "#" + wordTypeMarker;
 
 						int synTermRank = Integer.parseInt(synTermAndRank[1]);
 						// What we get here is a map of the type:
@@ -83,20 +81,17 @@ public class SentiWordNetDemoCode {
 
 						// Add map to term if it doesn't have one
 						if (!tempDictionary.containsKey(synTerm)) {
-							tempDictionary.put(synTerm,
-									new HashMap<Integer, Double>());
+							tempDictionary.put(synTerm, new HashMap<Integer, Double>());
 						}
 
 						// Add synset link to synterm
-						tempDictionary.get(synTerm).put(synTermRank,
-								synsetScore);
+						tempDictionary.get(synTerm).put(synTermRank, synsetScore);
 					}
 				}
 			}
 
 			// Go through all the terms.
-			for (Map.Entry<String, HashMap<Integer, Double>> entry : tempDictionary
-					.entrySet()) {
+			for (Map.Entry<String, HashMap<Integer, Double>> entry : tempDictionary.entrySet()) {
 				String word = entry.getKey();
 				Map<Integer, Double> synSetScoreMap = entry.getValue();
 
@@ -106,8 +101,7 @@ public class SentiWordNetDemoCode {
 				// Sum = 1/1 + 1/2 + 1/3 ...
 				double score = 0.0;
 				double sum = 0.0;
-				for (Map.Entry<Integer, Double> setScore : synSetScoreMap
-						.entrySet()) {
+				for (Map.Entry<Integer, Double> setScore : synSetScoreMap.entrySet()) {
 					score += setScore.getValue() / (double) setScore.getKey();
 					sum += 1.0 / (double) setScore.getKey();
 				}
@@ -125,12 +119,41 @@ public class SentiWordNetDemoCode {
 	}
 
 	public double extract(String word, String pos) {
-		return dictionary.get(word + "#" + pos);
-	}
-	
-	public static void main(String [] args) throws IOException {
-		SentiWordNetDemoCode sentiwordnet = new SentiWordNetDemoCode(Config.PATH_WN_SENT);
+		String key_dic = word + "#" + pos;
+		if (dictionary.containsKey(key_dic)) {
+			return dictionary.get(key_dic);
+		}else{
+			//System.err.println("not found: " + key_dic);
+			return 0d;
+		}
 		
+	}
+
+	public double extract(String word, PartOfSpeech pos) {
+		String pos_tranform;
+		switch (pos) {
+		case NOUN:
+			pos_tranform = "n";
+			break;
+		case ADJECTIVE:
+			pos_tranform = "a";
+			break;
+		case VERB:
+			pos_tranform = "v";
+			break;
+		case ADVERB:
+			pos_tranform = "r";
+			break;
+		default:
+			pos_tranform = "a";
+			break;
+		}
+		return extract(word, pos_tranform);
+	}
+
+	public static void main(String[] args) throws IOException {
+		SentiWordNetUtility sentiwordnet = new SentiWordNetUtility(Config.PATH_WN_SENT);
+
 		System.out.println(sentiwordnet.extract("fresh", "a"));
 		System.out.println(sentiwordnet.extract("plastic", "a"));
 		System.out.println(sentiwordnet.extract("sour", "n"));

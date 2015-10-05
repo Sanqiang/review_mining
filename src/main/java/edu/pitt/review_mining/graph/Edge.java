@@ -32,10 +32,18 @@ public class Edge implements Cloneable, Serializable {
 		this(gov, dep, type, review_weight, false);
 	}
 
+	public Node getGov() {
+		return this._gov;
+	}
+
+	public Node getDep() {
+		return this._dep;
+	}
+
 	public boolean isNegative() {
 		return this._is_negative;
 	}
-	
+
 	public void setFeatures(int feature) {
 		this._features = feature;
 	}

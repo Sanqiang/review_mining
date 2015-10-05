@@ -1,20 +1,12 @@
 package review_mining.process;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-
 import org.junit.Test;
 
 import edu.pitt.review_mining.graph.Edge;
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.graph.Node;
-import edu.pitt.review_mining.process.text.CLI;
 import edu.pitt.review_mining.process.text.ProcessUtility;
-import edu.pitt.review_mining.process.text.Report;
-import edu.pitt.review_mining.utility.Helper;
-import edu.pitt.review_mining.utility.PartOfSpeech;
-import edu.stanford.nlp.trees.Tree;
 
 public class ProcessTest {
 	// @Test
@@ -27,7 +19,6 @@ public class ProcessTest {
 		pu.processReviews("food is delicious.", 1, 0);
 		pu.processReviews("food is delicious.", 2, 0);
 		Graph graph = pu.getGraph();
-		Report.intepretGraph(graph);
 		System.out.println(graph);
 		assert(true);
 	}
@@ -42,12 +33,12 @@ public class ProcessTest {
 		// ConjAndComp; //The chicken and rice with white sauce is delicious.
 		// chicken rice is delicious.
 		// test following by tune comment !
-		pu.processReviews("red food is not good.", 0,0);
+		//pu.processReviews("red food is not good.", 0,0);
 		//pu.processReviews("chicken is not delicious food.", 0, 0);
 		// pu.processReviews("food is not delicious.", 0,0);
 		// pu.processReviews("the chicken and rice with white sauce is not
 		// delicious.", 0, 0);
-		// pu.processReviews("it tastes nothing like coconut water",0, 0);
+		 pu.processReviews("it tastes like coconut water",0, 0);
 		for (Node node : pu.getGraph().getNodes()) {
 			// if (node.getPOS() == PartOfSpeech.NOUN) {
 			System.out.println();
