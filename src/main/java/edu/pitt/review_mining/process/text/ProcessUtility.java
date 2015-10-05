@@ -71,7 +71,7 @@ public class ProcessUtility {
 		// does detect phrase for now, use dependency parser of compound
 		// relationship
 		// sentence = preprocessSentence(sentence);
-		//sentence = filterSentence(sentence);
+		// sentence = filterSentence(sentence);
 		// split tree break dependency parser so deprecated
 		// ArrayList<Tree> trees = splitTree(tree);
 		// for (int i = trees.size() - 1; i >= 0; i--) {
@@ -157,7 +157,7 @@ public class ProcessUtility {
 				Node dep = local_graph.createNode(pos_dep, lemma_dep, review_id, idx_dep);
 
 				DependencyType dependency_type = Helper.mapRelationTypes(typed_dependence.reln().getShortName());
-				local_graph.createEdge(gov, dep, dependency_type, review_id, idx_gov, pos_feature, review_weight);
+				local_graph.createEdge(gov, dep, dependency_type, review_id, idx_gov, pos_feature, review_weight,false);
 			}
 		}
 
@@ -169,16 +169,22 @@ public class ProcessUtility {
 					Node another_node = edge.getOtherNode(node);
 					// DependencyType.XComp : food smells good.
 					if (edge.getDependencyType() == DependencyType.Complement
-							/*&& another_node.getPOS() == PartOfSpeech.ADJECTIVE*/) {
+					/* && another_node.getPOS() == PartOfSpeech.ADJECTIVE */) {
+						boolean is_negative = false;
+						for (Edge neg_edge : another_node.getOutcomingEdges()) {
+							if (neg_edge.getDependencyType() == DependencyType.Negative) {
+								is_negative = true;
+							}
+						}
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.XComplement, review_id,
-								node.getSentenceLoc(), pos_feature, review_weight);
-					}else if (edge.getDependencyType() == DependencyType.NounModifier) {
+								node.getSentenceLoc(), pos_feature, review_weight, is_negative);
+					} else if (edge.getDependencyType() == DependencyType.NounModifier) {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleNmod, review_id,
-								node.getSentenceLoc(), pos_feature, review_weight);
+								node.getSentenceLoc(), pos_feature, review_weight,false);
 					}
 				}
 			}
@@ -190,10 +196,16 @@ public class ProcessUtility {
 					// DependencyType.SingleAmod : red food is good.
 					if (edge.getDependencyType() == DependencyType.AdjectivalModifier
 							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						boolean is_negative = false;
+						for (Edge neg_edge : another_node.getOutcomingEdges()) {
+							if (neg_edge.getDependencyType() == DependencyType.Negative) {
+								is_negative = true;
+							}
+						}
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleAmod, review_id,
-								node.getSentenceLoc(), pos_feature, review_weight);
+								node.getSentenceLoc(), pos_feature, review_weight, is_negative);
 					}
 
 					// DependencyType.ConjAndComp : The chicken and rice with
@@ -203,7 +215,7 @@ public class ProcessUtility {
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.ConjAndComp, review_id,
-								node.getSentenceLoc(), pos_feature, review_weight);
+								node.getSentenceLoc(), pos_feature, review_weight,false);
 					}
 				}
 
@@ -213,10 +225,16 @@ public class ProcessUtility {
 					// DependencyType.SingleAmod : red food is good.
 					if (edge.getDependencyType() == DependencyType.Dependent
 							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						boolean is_negative = false;
+						for (Edge neg_edge : another_node.getOutcomingEdges()) {
+							if (neg_edge.getDependencyType() == DependencyType.Negative) {
+								is_negative = true;
+							}
+						}
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
-						this._graph.createEdge(node_global, another_node_global, DependencyType.AdjectivalModifier, review_id,
-								node.getSentenceLoc(), pos_feature, review_weight);
+						this._graph.createEdge(node_global, another_node_global, DependencyType.AdjectivalModifier,
+								review_id, node.getSentenceLoc(), pos_feature, review_weight,is_negative);
 					}
 
 					// DependencyType.AmodSubj chicken is delicious food.
@@ -226,10 +244,16 @@ public class ProcessUtility {
 							Node another_node2 = edge2.getOtherNode(another_node);
 							if (edge2.getDependencyType() == DependencyType.AdjectivalModifier
 									&& another_node2.getPOS() == PartOfSpeech.ADJECTIVE) {
+								boolean is_negative = false;
+								for (Edge neg_edge : another_node.getOutcomingEdges()) {
+									if (neg_edge.getDependencyType() == DependencyType.Negative) {
+										is_negative = true;
+									}
+								}
 								Node node_global = this._graph.createNode(node);
 								Node another_node_global = this._graph.createNode(another_node2);
 								this._graph.createEdge(node_global, another_node_global, DependencyType.AmodSubj,
-										review_id, node.getSentenceLoc(), pos_feature, review_weight);
+										review_id, node.getSentenceLoc(), pos_feature, review_weight,is_negative);
 							}
 						}
 					}
@@ -237,10 +261,16 @@ public class ProcessUtility {
 					// DependencyType.SingleSubj food is delicious.
 					if (edge.getDependencyType() == DependencyType.NominalSubject
 							&& another_node.getPOS() == PartOfSpeech.ADJECTIVE) {
+						boolean is_negative = false;
+						for (Edge neg_edge : another_node.getOutcomingEdges()) {
+							if (neg_edge.getDependencyType() == DependencyType.Negative) {
+								is_negative = true;
+							}
+						}
 						Node node_global = this._graph.createNode(node);
 						Node another_node_global = this._graph.createNode(another_node);
 						this._graph.createEdge(node_global, another_node_global, DependencyType.SingleSubj, review_id,
-								node.getSentenceLoc(), pos_feature, review_weight);
+								node.getSentenceLoc(), pos_feature, review_weight,is_negative);
 					}
 				}
 			}

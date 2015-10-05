@@ -10,6 +10,7 @@ public enum DependencyType {
 	Complement,
 	Dependent,
 	NounModifier,
+	Negative,
 	//MISCELLANEOUS ONE, FOR UNINTERESTING AND UNMAPPED RELATIONS
 	OtherLocalType,
 	

@@ -42,22 +42,19 @@ public class ProcessTest {
 		// ConjAndComp; //The chicken and rice with white sauce is delicious.
 		// chicken rice is delicious.
 		// test following by tune comment !
-		// Graph graph = pu.generateDependencyGraph("red food is good.", 0,0);
-		// Graph graph = pu.generateDependencyGraph("chicken is delicious
-		// food.", 0,0);
-		// Graph graph = pu.generateDependencyGraph("food is delicious.", 0,0);
-		// Graph graph = pu.generateDependencyGraph("the chicken and rice with
-		// white sauce is delicious.", 0, 0, 0);
-		pu.processReviews(
-				"it tastes nothing like coconut water",
-				0, 0);
+		pu.processReviews("red food is not good.", 0,0);
+		//pu.processReviews("chicken is not delicious food.", 0, 0);
+		// pu.processReviews("food is not delicious.", 0,0);
+		// pu.processReviews("the chicken and rice with white sauce is not
+		// delicious.", 0, 0);
+		// pu.processReviews("it tastes nothing like coconut water",0, 0);
 		for (Node node : pu.getGraph().getNodes()) {
 			// if (node.getPOS() == PartOfSpeech.NOUN) {
 			System.out.println();
 			System.out.print(node.getLemma() + ":");
 			for (Edge edge : node.getOutcomingEdges()) {
 				Node another_node = edge.getOtherNode(node);
-				System.out.print(edge.getDependencyType().name() + ":");
+				System.out.print(edge.getDependencyType().name() + "-" + edge.isNegative() + ":");
 				System.out.print(another_node.getLemma() + "\t");
 			}
 			// }

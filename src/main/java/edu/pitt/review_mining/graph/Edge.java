@@ -17,23 +17,33 @@ public class Edge implements Cloneable, Serializable {
 	// private int _count;
 	private HashMap<Integer, HashSet<Integer>> _occurs = null;
 	private double _review_weight;
+	private boolean _is_negative;
 
-	public Edge(Node gov, Node dep, DependencyType type, double review_weight) {
+	public Edge(Node gov, Node dep, DependencyType type, double review_weight, boolean is_negative) {
 		this._type = type;
 		this._dep = dep;
 		this._gov = gov;
 		this._review_weight = review_weight;
+		this._is_negative = is_negative;
 		this._occurs = new HashMap<>();
+	}
+
+	public Edge(Node gov, Node dep, DependencyType type, double review_weight) {
+		this(gov, dep, type, review_weight, false);
+	}
+
+	public boolean isNegative() {
+		return this._is_negative;
 	}
 	
 	public void setFeatures(int feature) {
 		this._features = feature;
 	}
-	
+
 	public int getFeatures() {
 		return this._features;
 	}
-	
+
 	// public void incrementCount() {
 	// ++this._count;
 	// }
@@ -41,7 +51,7 @@ public class Edge implements Cloneable, Serializable {
 	public DependencyType getDependencyType() {
 		return _type;
 	}
-	
+
 	public double getReviewWeight() {
 		return this._review_weight;
 	}
