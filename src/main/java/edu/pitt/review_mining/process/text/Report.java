@@ -34,7 +34,7 @@ import edu.pitt.review_mining.utility.Stemmer;
 
 public class Report {
 
-	public static Graph readData(String path) {
+	public static Graph readData(String path, double limit) {
 		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20);
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
@@ -46,12 +46,13 @@ public class Report {
 				String[] items = line.split("\t");
 				if (items.length == 3) {
 					int rating = Integer.parseInt(items[0]);
-					if (rating != 1) {
-						continue;
-					}
 					String review = items[2];
 					double review_weight = ku.getWeight(review_idx, rating);
-					process.processReviews(review, review_idx++, review_weight);
+					if (review_weight >= limit) {
+						process.processReviews(review, review_idx, review_weight);
+						System.out.println("i");
+					}
+					++review_idx;
 				} else {
 					System.err.println(line);
 				}
@@ -77,9 +78,6 @@ public class Report {
 				String[] items = line.split("\t");
 				if (items.length == 3) {
 					int rating = Integer.parseInt(items[0]);
-					if (rating != 1) {
-						continue;
-					}
 					String review = items[2];
 					double review_weight = ku.getWeight(review_idx, rating);
 					sb.append(review_weight).append("\t").append(review).append("\n");
@@ -209,8 +207,9 @@ public class Report {
 					// TODO
 				} else {
 					JsonObject obj = new JsonObject();
-					obj/*.add("dep", dep_lemma)*/.add("gov", gov_lemma).add("sent", gov_sentiment).add("rel", type.name())
-							.add("freq", edge.getCount()).add("r_weight", edge.getReviewWeight());
+					obj/* .add("dep", dep_lemma) */.add("gov", gov_lemma).add("sent", gov_sentiment)
+							.add("rel", type.name()).add("freq", edge.getCount())
+							.add("r_weight", edge.getReviewWeight());
 					if (!map_obj.containsKey(dep_lemma)) {
 						map_obj.put(dep_lemma, new ArrayList<>());
 					}
