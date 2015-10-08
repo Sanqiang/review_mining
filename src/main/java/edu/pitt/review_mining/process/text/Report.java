@@ -19,6 +19,8 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
+import org.apache.commons.math3.analysis.function.Add;
+
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -42,6 +44,7 @@ public class Report {
 			reader = new BufferedReader(new FileReader(new File(path)));
 			String line = null;
 			int review_idx = 0;
+			int process_idx = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] items = line.split("\t");
 				if (items.length == 3) {
@@ -50,7 +53,7 @@ public class Report {
 					double review_weight = ku.getWeight(review_idx, rating);
 					if (review_weight >= limit) {
 						process.processReviews(review, review_idx, review_weight);
-						System.out.println("i");
+						++process_idx;
 					}
 					++review_idx;
 				} else {
@@ -58,6 +61,8 @@ public class Report {
 				}
 			}
 			reader.close();
+			double portion = (double) process_idx / review_idx;
+			System.out.println("Processed: " + portion);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -224,16 +229,30 @@ public class Report {
 			for (Map.Entry<String, ArrayList<JsonObject>> map_obj_entry : map_obj2) {
 				String dep = map_obj_entry.getKey();
 				double sent = 0;
+				double sent_pos = 0;
+				double sent_neg = 0;
+				int sent_pos_n = 0;
+				int sent_neg_n = 0;
 
 				JsonObject obj_output = new JsonObject();
 				JsonArray arr_output_temp = new JsonArray();
 				for (JsonObject obj : map_obj_entry.getValue()) {
-					sent += obj.get("sent").asDouble() * obj.get("freq").asInt();
+					double obj_sent = obj.get("sent").asDouble();
+					int obj_freq = obj.get("freq").asInt();
+					if (obj_sent > 0) {
+						sent_pos += obj_sent * obj_freq;
+						sent_pos_n++;
+					} else if (obj_sent < 0) {
+						sent_neg += obj_sent * obj_freq;
+						sent_neg_n++;
+					}
+					sent += obj_sent * obj_freq;
 					arr_output_temp.add(obj);
 
 				}
 				sb.append(dep).append(",").append(sent).append("\n");
-				obj_output.add("dep", dep).add("sent", sent).add("list", arr_output_temp);
+				obj_output.add("dep", dep).add("sent", sent).add("list", arr_output_temp).add("sent_pos", sent_pos)
+						.add("sent_neg", sent_neg).add("sent_pos_n", sent_pos_n).add("sent_neg_n", sent_neg_n);
 				arr_output.add(obj_output);
 			}
 
