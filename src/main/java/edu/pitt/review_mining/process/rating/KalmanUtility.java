@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.FileReader;
 
 public class KalmanUtility {
+	final static double[] rating_weight = { 0.9, 0.3, 0, 0.1, 0.3, 0.9 };
+
 	final int scale = 5;
 	double[][] _weight_matrix = null;
 	int _num_times;
@@ -38,7 +40,7 @@ public class KalmanUtility {
 			System.out.println(review_idx);
 			System.out.println(this._weight_matrix[0].length);
 		}
-		return this._weight_matrix[rating - 1][row_idx];
+		return this._weight_matrix[rating - 1][row_idx] * rating_weight[rating-1];
 	}
 
 	private int getRowIdx(int review_idx) {

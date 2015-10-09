@@ -36,7 +36,7 @@ import edu.pitt.review_mining.utility.Stemmer;
 
 public class Report {
 
-	public static Graph readData(String path, double limit) {
+	public static Graph readData(String path, double limit, boolean random_sample) {
 		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20);
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
@@ -51,8 +51,8 @@ public class Report {
 					int rating = Integer.parseInt(items[0]);
 					String review = items[2];
 					double review_weight = ku.getWeight(review_idx, rating);
-					if (review_weight >= limit) {
-						process.processReviews(review, review_idx, review_weight);
+					if ((review_weight >= limit && !random_sample) || (random_sample && Math.random() > 0.8)) {
+						process.processReviews(review, review_idx, review_weight, rating);
 						++process_idx;
 					}
 					++review_idx;
@@ -214,7 +214,7 @@ public class Report {
 					JsonObject obj = new JsonObject();
 					obj/* .add("dep", dep_lemma) */.add("gov", gov_lemma).add("sent", gov_sentiment)
 							.add("rel", type.name()).add("freq", edge.getCount())
-							.add("r_weight", edge.getReviewWeight());
+							.add("r_weight", edge.getReviewWeight()).add("clause", edge.getSentence());
 					if (!map_obj.containsKey(dep_lemma)) {
 						map_obj.put(dep_lemma, new ArrayList<>());
 					}
@@ -233,6 +233,7 @@ public class Report {
 				double sent_neg = 0;
 				int sent_pos_n = 0;
 				int sent_neg_n = 0;
+				double total_r_weight = 0;
 
 				JsonObject obj_output = new JsonObject();
 				JsonArray arr_output_temp = new JsonArray();
@@ -246,13 +247,18 @@ public class Report {
 						sent_neg += obj_sent * obj_freq;
 						sent_neg_n++;
 					}
+					total_r_weight += obj.get("r_weight").asDouble();
 					sent += obj_sent * obj_freq;
 					arr_output_temp.add(obj);
 
 				}
+				if (sent_pos_n + sent_neg_n > 0) {
+					total_r_weight /= (sent_pos_n + sent_neg_n);
+				}
 				sb.append(dep).append(",").append(sent).append("\n");
 				obj_output.add("dep", dep).add("sent", sent).add("list", arr_output_temp).add("sent_pos", sent_pos)
-						.add("sent_neg", sent_neg).add("sent_pos_n", sent_pos_n).add("sent_neg_n", sent_neg_n);
+						.add("sent_neg", sent_neg).add("sent_pos_n", sent_pos_n).add("sent_neg_n", sent_neg_n)
+						.add("total_r_weight", total_r_weight);
 				arr_output.add(obj_output);
 			}
 

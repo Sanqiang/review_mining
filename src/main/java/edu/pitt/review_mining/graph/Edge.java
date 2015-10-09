@@ -18,19 +18,36 @@ public class Edge implements Cloneable, Serializable {
 	private HashMap<Integer, HashSet<Integer>> _occurs = null;
 	private double _review_weight;
 	private boolean _is_negative;
+	private int _rating = 0;
+	private String _sentence;
 
-	public Edge(Node gov, Node dep, DependencyType type, double review_weight, boolean is_negative) {
+	public Edge(Node gov, Node dep, DependencyType type, double review_weight, boolean is_negative, int rating,
+			String sentence) {
 		this._type = type;
 		this._dep = dep;
 		this._gov = gov;
 		this._review_weight = review_weight;
 		this._is_negative = is_negative;
 		this._occurs = new HashMap<>();
+		this._rating = rating;
+		this._sentence = sentence;
 	}
 
 	public Edge(Node gov, Node dep, DependencyType type, double review_weight) {
-		this(gov, dep, type, review_weight, false);
+		this(gov, dep, type, review_weight, false, -1, "");
 	}
+
+	public String getSentence() {
+		return this._sentence;
+	}
+
+	public double getRating() {
+		return this._rating;
+	}
+
+	// public void setRating(int rating) {
+	// this._rating = rating;
+	// }
 
 	public Node getGov() {
 		return this._gov;
