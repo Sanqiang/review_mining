@@ -37,7 +37,7 @@ import edu.pitt.review_mining.utility.Stemmer;
 public class Report {
 
 	public static Graph readData(String path, double limit, boolean random_sample) {
-		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20);
+		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 25);
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
 		try {
@@ -51,7 +51,7 @@ public class Report {
 					int rating = Integer.parseInt(items[0]);
 					String review = items[2];
 					double review_weight = ku.getWeight(review_idx, rating);
-					if ((review_weight >= limit && !random_sample) || (random_sample && Math.random() > 0.8)) {
+					if ((review_weight <= limit && !random_sample) || (random_sample && Math.random() < limit)) {
 						process.processReviews(review, review_idx, review_weight, rating);
 						++process_idx;
 					}
@@ -208,7 +208,7 @@ public class Report {
 				String gov_lemma = gov_node.getLemma();
 				double gov_sentiment = sent_word_net.extract(gov_lemma, gov_node.getPOS());
 				DependencyType type = edge.getDependencyType();
-				if (type == DependencyType.ConjAndComp) {
+				if (type == DependencyType.ConjAndComp || type == DependencyType.XComplement || type == DependencyType.SingleNmod) {
 					// TODO
 				} else {
 					JsonObject obj = new JsonObject();

@@ -4,7 +4,7 @@ import edu.stanford.nlp.parser.nndep.DependencyParser;
 
 public class Config {
 	// path
-	public final static String PATH_TEXT = "r/B000CNB4LE_sorted.txt";
+	public final static String PATH_TEXT = "Dennis+Schwartz.txt";
 	public final static String PATH_WEIGHT = "r/weight.txt";
 
 	// for wordnet

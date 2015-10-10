@@ -1,19 +1,18 @@
 require("FKF")
 require("MASS")
 
-rating = read.table("C:/git/B000CNB4LE.txt",sep="\t",col.names=c("rating","time","text"),quote = "")
+rating = read.table("C:/git/review_mining/Dennis+Schwartz.txt",sep="\t",col.names=c("rating","time","text"),quote = "")
 rating = rating[order(rating[,2]),]
-rating = rating[16:dim(rating)[1],]
-write.table(rating,"B000CNB4LE_sorted.txt",row.names = FALSE,col.names = FALSE,quote = FALSE,sep = "\t")
+rating = rating[3:dim(rating)[1],]
+#write.table(rating,"B000CNB4LE_sorted.txt",row.names = FALSE,col.names = FALSE,quote = FALSE,sep = "\t")
 
 
 
 rating = rating[,1]
-rating = matrix(rating,20)
-
+rating = matrix(rating,25)
 
 aggre <- function(row){
-  c(length(which(row == 1)),length(which(row == 2)),length(which(row == 3)),length(which(row == 4)),length(which(row == 5)))/length(row)
+  c(length(which(row == 0)),length(which(row == 1)),length(which(row == 2)),length(which(row == 3)))/length(row)
 }
 
 ## <--------------------------------------------------------------------------->
@@ -25,7 +24,7 @@ aggre <- function(row){
 ## y[t] = alpha[t] + eps[t], eps[t] ~ N(0, GGt)
 rating <- apply(rating,2,aggre)
 residual = matrix(-1,nrow=dim(rating)[1],ncol=dim(rating)[2])
-for(r_id in 1:5){
+for(r_id in 1:4){
   y = rating[r_id,]
   ## Set constant parameters:
   dt <- ct <- matrix(0)
