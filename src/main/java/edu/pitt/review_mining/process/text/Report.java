@@ -187,7 +187,7 @@ public class Report {
 	}
 
 	// edge level report
-	public static void intepretGraphEdge(Graph graph, String output) {
+	public static HashMap<String, Double> intepretGraphEdge(Graph graph, String output) {
 		try {
 			WordNetUtility word_net = new WordNetUtility();
 			SentiWordNetUtility sent_word_net = new SentiWordNetUtility(Config.PATH_WN_SENT);
@@ -226,6 +226,7 @@ public class Report {
 
 			StringBuilder sb = new StringBuilder();
 			JsonArray arr_output = new JsonArray();
+			HashMap<String, Double> map = new HashMap<>();
 			for (Map.Entry<String, ArrayList<JsonObject>> map_obj_entry : map_obj2) {
 				String dep = map_obj_entry.getKey();
 				double sent = 0;
@@ -256,6 +257,8 @@ public class Report {
 					total_r_weight /= (sent_pos_n + sent_neg_n);
 				}
 				sb.append(dep).append(",").append(sent).append("\n");
+				//return hashmap with word-sent
+				map.put(dep, sent);
 				obj_output.add("dep", dep).add("sent", sent).add("list", arr_output_temp).add("sent_pos", sent_pos)
 						.add("sent_neg", sent_neg).add("sent_pos_n", sent_pos_n).add("sent_neg_n", sent_neg_n)
 						.add("total_r_weight", total_r_weight);
@@ -268,8 +271,11 @@ public class Report {
 			writer = new BufferedWriter(new FileWriter(new File(output + "_json")));
 			writer.write(arr_output.toString());
 			writer.close();
+			
+			return map;
 		} catch (Exception e) {
 			e.printStackTrace();
+			return null;
 		}
 	}
 

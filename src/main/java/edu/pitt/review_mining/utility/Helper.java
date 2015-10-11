@@ -1,6 +1,9 @@
 package edu.pitt.review_mining.utility;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.TreeMap;
 
 import edu.stanford.nlp.trees.LabeledScoredTreeNode;
 import edu.stanford.nlp.trees.Tree;
@@ -61,9 +64,9 @@ public class Helper {
 		case "nsubj":
 			mappedRelType = DependencyType.NominalSubject;
 			break;
-		//case "dobj":
-		//	mappedRelType = DependencyType.DirectObject;
-		//	break;
+		// case "dobj":
+		// mappedRelType = DependencyType.DirectObject;
+		// break;
 		case "conj:and":
 		case "compound":
 		case "conj":
@@ -113,5 +116,20 @@ public class Helper {
 
 	public static boolean getBit(int val, int pos) {
 		return (val >> pos) % 2 > 0;
+	}
+
+	public static double getCosinSim(HashMap<String, Double> map1, HashMap<String, Double> map2) {
+		double sim = 0d, norm1 = 0d, norm2 = 0d;
+		for (String key1 : map1.keySet()) {
+			if (map2.containsKey(key1)) {
+				sim += map1.get(key1) * map2.get(key1);
+			}
+			norm1 += map1.get(key1) * map1.get(key1);
+		}
+		for (String key2 : map2.keySet()) {
+			norm2 += map2.get(key2) * map2.get(key2);
+		}
+		sim /= (Math.sqrt(norm1) * Math.sqrt(norm2));
+		return sim;
 	}
 }
