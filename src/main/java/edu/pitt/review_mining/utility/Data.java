@@ -9,21 +9,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
-
 import org.json.JSONObject;
 import org.json.JSONTokener;
-
-import com.eclipsesource.json.ParseException;
-
-import scala.util.parsing.combinator.testing.Str;
 
 public class Data {
 	static void processAmazon(String product_id) {
@@ -63,15 +53,37 @@ public class Data {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\B000CNB4LE.txt")));
 			String line = null;
-			StringBuilder sb = new StringBuilder();
+			ArrayList<ReviewObj> list = new ArrayList<>();
 			while (null != (line = reader.readLine())) {
 				String[] items = line.split("\t");
-				sb.append(items[0]).append("\t").append(items[1]).append("\n");
+				if (items.length != 3) {
+					System.err.println(line);
+					continue;
+				}
+				ReviewObj obj = new ReviewObj();
+				obj.text = items[2];
+				obj.time = Long.parseLong(items[1]);
+				obj.rating = Integer.parseInt(items[0]);
+				list.add(obj);
 			}
 			reader.close();
 
+			Collections.sort(list,new Comparator<ReviewObj>() {
+
+				@Override
+				public int compare(ReviewObj o1, ReviewObj o2) {
+					long time1 = o1.time;
+					long time2  = o2.time;
+					return (int) (time2-time1);
+				}
+			});
+			
+			StringBuilder sb = new StringBuilder();
 			BufferedWriter writer = new BufferedWriter(
-					new FileWriter(new File("C:\\git\\B000CNB4LE__simple_plain.txt")));
+					new FileWriter(new File("C:/git/review_mining/r/B000CNB4L_new.txt")));
+			for (ReviewObj reviewObj : list) {
+				sb.append(reviewObj);
+			}
 			writer.write(sb.toString());
 			writer.close();
 
@@ -86,7 +98,7 @@ public class Data {
 	// http://www.cs.cornell.edu/people/pabo/movie-review-data
 	static void processMovie() {
 		final String path = "C:/git/movie/";
-		HashMap<Long, MovieObj> movies = new HashMap<>();
+		HashMap<Long, ReviewObj> movies = new HashMap<>();
 		try {
 
 			BufferedReader reader_id = new BufferedReader(
@@ -105,7 +117,7 @@ public class Data {
 				}
 				long id = Long.valueOf(id_line);
 				int rating = (int) (Double.parseDouble(rating_line) * 1);
-				MovieObj obj = new MovieObj();
+				ReviewObj obj = new ReviewObj();
 				obj.id = id;
 				obj.rating = rating;
 				obj.text = text_line;
@@ -134,10 +146,10 @@ public class Data {
 				}
 			}
 
-			ArrayList<MovieObj> movie_col = new ArrayList<>(movies.values());
-			Collections.sort(movie_col, new Comparator<MovieObj>() {
+			ArrayList<ReviewObj> movie_col = new ArrayList<>(movies.values());
+			Collections.sort(movie_col, new Comparator<ReviewObj>() {
 				@Override
-				public int compare(MovieObj o1, MovieObj o2) {
+				public int compare(ReviewObj o1, ReviewObj o2) {
 					long date1 = o1.time;
 					long date2 = o2.time;
 					if (date2 > date1) {
@@ -151,13 +163,16 @@ public class Data {
 			});
 
 			StringBuilder sb = new StringBuilder();
-			for (MovieObj movieObj : movie_col) {
+			for (ReviewObj movieObj : movie_col) {
 				sb.append(movieObj);
 			}
 
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("Dennis+Schwartz.txt")));
 			writer.write(sb.toString());
 			writer.close();
+			
+			reader_id.close();
+			reader_rating.close();
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -166,20 +181,16 @@ public class Data {
 	}
 
 	public static void main(String[] args) {
-		// processAmazon2();
-		processMovie();
+		processAmazon2();
+		// processMovie();
 	}
 }
 
-class MovieObj {
+class ReviewObj {
 	public long id;
 	public String text;
 	public int rating;
 	public long time;
-
-	public MovieObj getinst() {
-		return new MovieObj();
-	}
 
 	@Override
 	public String toString() {

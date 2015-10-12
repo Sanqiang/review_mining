@@ -12,14 +12,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-
-import org.apache.commons.math3.analysis.function.Add;
 
 import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
@@ -36,12 +33,13 @@ import edu.pitt.review_mining.utility.Stemmer;
 
 public class Report {
 
-	public static Graph readData(String path, double limit, boolean random_sample) {
-		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 25);
+	public static Graph readData(String path_data, String path_weigth, double limit, boolean random_sample,
+			int ditr_interval, int rating_scale) {
+		KalmanUtility ku = new KalmanUtility(path_weigth, ditr_interval, rating_scale);
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader(new File(path)));
+			reader = new BufferedReader(new FileReader(new File(path_data)));
 			String line = null;
 			int review_idx = 0;
 			int process_idx = 0;
@@ -51,7 +49,7 @@ public class Report {
 					int rating = Integer.parseInt(items[0]);
 					String review = items[2];
 					double review_weight = ku.getWeight(review_idx, rating);
-					if ((review_weight <= limit && !random_sample) || (random_sample && Math.random() < limit)) {
+					if ((review_weight >= limit && !random_sample) || (random_sample && Math.random() < limit)) {
 						process.processReviews(review, review_idx, review_weight, rating);
 						++process_idx;
 					}
@@ -71,8 +69,8 @@ public class Report {
 		return process.getGraph();
 	}
 
-	public static void generateReviewReport(String path) {
-		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20);
+	public static void generateReviewReport(String path, int rating_scale) {
+		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20, rating_scale);
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("result.txt")));
 			StringBuilder sb = new StringBuilder();
@@ -208,7 +206,8 @@ public class Report {
 				String gov_lemma = gov_node.getLemma();
 				double gov_sentiment = sent_word_net.extract(gov_lemma, gov_node.getPOS());
 				DependencyType type = edge.getDependencyType();
-				if (type == DependencyType.ConjAndComp || type == DependencyType.XComplement || type == DependencyType.SingleNmod) {
+				if (type == DependencyType.ConjAndComp || type == DependencyType.XComplement
+						|| type == DependencyType.SingleNmod) {
 					// TODO
 				} else {
 					JsonObject obj = new JsonObject();
@@ -257,7 +256,7 @@ public class Report {
 					total_r_weight /= (sent_pos_n + sent_neg_n);
 				}
 				sb.append(dep).append(",").append(sent).append("\n");
-				//return hashmap with word-sent
+				// return hashmap with word-sent
 				map.put(dep, sent);
 				obj_output.add("dep", dep).add("sent", sent).add("list", arr_output_temp).add("sent_pos", sent_pos)
 						.add("sent_neg", sent_neg).add("sent_pos_n", sent_pos_n).add("sent_neg_n", sent_neg_n)
@@ -271,7 +270,7 @@ public class Report {
 			writer = new BufferedWriter(new FileWriter(new File(output + "_json")));
 			writer.write(arr_output.toString());
 			writer.close();
-			
+
 			return map;
 		} catch (Exception e) {
 			e.printStackTrace();

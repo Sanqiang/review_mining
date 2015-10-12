@@ -5,16 +5,17 @@ import java.io.File;
 import java.io.FileReader;
 
 public class KalmanUtility {
-	final static double[] rating_weight = { 1, 1, 1, 1 };
+	// final static double[] rating_weight = { 1, 1, 1, 1 };
 
-	final int scale = 4;
+	int _scale = 5;
 	double[][] _weight_matrix = null;
 	int _num_times;
 	int _interval;
 
-	public KalmanUtility(String path, int interval) {
+	public KalmanUtility(String path, int interval, int scale) {
 		try {
 			this._interval = interval;
+			this._scale = scale;
 			BufferedReader reader = new BufferedReader(new FileReader(new File(path)));
 			String line = null;
 			int col_id = 0;
@@ -36,11 +37,13 @@ public class KalmanUtility {
 
 	public double getWeight(int review_idx, int rating) {
 		int row_idx = getRowIdx(review_idx);
-		if (row_idx >= this._weight_matrix[0].length) {
+		if (row_idx >= this._weight_matrix[0].length || rating - 1 >= this._weight_matrix.length) {
 			System.out.println(review_idx);
 			System.out.println(this._weight_matrix[0].length);
 		}
-		return this._weight_matrix[rating][row_idx] * rating_weight[rating];
+		return this._weight_matrix[rating
+				- 1][row_idx] /** rating_weight[rating] */
+		;
 	}
 
 	private int getRowIdx(int review_idx) {
