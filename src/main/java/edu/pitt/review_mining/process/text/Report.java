@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Queue;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
@@ -33,9 +35,9 @@ import edu.pitt.review_mining.utility.Stemmer;
 
 public class Report {
 
-	public static Graph readData(String path_data, String path_weigth, double limit, boolean random_sample,
-			int ditr_interval, int rating_scale) {
-		KalmanUtility ku = new KalmanUtility(path_weigth, ditr_interval, rating_scale);
+	public static Graph readData(String path_data, String path_weigth,boolean weight_cut, double limit, boolean random_sample,
+			int ditr_interval, int rating_scale, boolean len_cut, int len_limit, int rating_start) {
+		KalmanUtility ku = new KalmanUtility(path_weigth, ditr_interval, rating_scale, rating_start);
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
 		try {
@@ -43,24 +45,32 @@ public class Report {
 			String line = null;
 			int review_idx = 0;
 			int process_idx = 0;
+			int process_words = 0;
+			int total_words = 0;
 			while ((line = reader.readLine()) != null) {
 				String[] items = line.split("\t");
 				if (items.length == 3) {
 					int rating = Integer.parseInt(items[0]);
 					String review = items[2];
+					int n_words = review.split(" ").length;
 					double review_weight = ku.getWeight(review_idx, rating);
-					if ((review_weight >= limit && !random_sample) || (random_sample && Math.random() < limit)) {
+					if ((review_weight >= limit && weight_cut) || (random_sample && Math.random() < limit)
+							|| (len_cut && review.length() >= len_limit)) {
 						process.processReviews(review, review_idx, review_weight, rating);
 						++process_idx;
+						process_words += n_words;
 					}
 					++review_idx;
+					total_words += n_words;
 				} else {
 					System.err.println(line);
 				}
 			}
 			reader.close();
-			double portion = (double) process_idx / review_idx;
-			System.out.println("Processed: " + portion);
+			double portion_item = (double) process_idx / review_idx;
+			System.out.println("Processed Item: " + portion_item);
+			double portion_words = (double) process_words / total_words;
+			System.out.println("Processed Words: " + portion_words);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -69,8 +79,14 @@ public class Report {
 		return process.getGraph();
 	}
 
+	public static Graph readData(String path_data, String path_weigth,boolean weight_cut, double limit, boolean random_sample,
+			int ditr_interval, int rating_scale, int rating_start) {
+		return readData(path_data, path_weigth,weight_cut, limit, random_sample, ditr_interval, rating_scale, false,
+				Integer.MAX_VALUE, rating_start);
+	}
+
 	public static void generateReviewReport(String path, int rating_scale) {
-		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20, rating_scale);
+		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20, rating_scale, 1);
 		try {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("result.txt")));
 			StringBuilder sb = new StringBuilder();
@@ -355,6 +371,36 @@ public class Report {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static int getReviewLenLimit(String path_data, double percentage) {
+		Queue<Integer> qi = new PriorityQueue<Integer>();
+		BufferedReader reader = null;
+		try {
+			reader = new BufferedReader(new FileReader(new File(path_data)));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				String[] items = line.split("\t");
+				if (items.length == 3) {
+					String review = items[2];
+					int review_len = review.length();
+					qi.add(review_len);
+				} else {
+					System.err.println(line);
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		double origin_size = qi.size();
+		while (qi.size() > 0) {
+			int cur_len = qi.poll();
+			if (percentage > qi.size() / origin_size) {
+				return cur_len;
+			}
+		}
+		return 0;
 	}
 
 	private static SortedSet<Map.Entry<String, ArrayList<JsonObject>>> entriesSortedByValues(

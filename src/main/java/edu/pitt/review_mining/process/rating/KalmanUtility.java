@@ -7,15 +7,17 @@ import java.io.FileReader;
 public class KalmanUtility {
 	// final static double[] rating_weight = { 1, 1, 1, 1 };
 
-	int _scale = 5;
+	int _scale;
 	double[][] _weight_matrix = null;
 	int _num_times;
 	int _interval;
+	int _rating_start;
 
-	public KalmanUtility(String path, int interval, int scale) {
+	public KalmanUtility(String path, int interval, int scale, int rating_start) {
 		try {
 			this._interval = interval;
 			this._scale = scale;
+			this._rating_start = rating_start;
 			BufferedReader reader = new BufferedReader(new FileReader(new File(path)));
 			String line = null;
 			int col_id = 0;
@@ -41,8 +43,7 @@ public class KalmanUtility {
 			System.out.println(review_idx);
 			System.out.println(this._weight_matrix[0].length);
 		}
-		return this._weight_matrix[rating
-				- 1][row_idx] /** rating_weight[rating] */
+		return this._weight_matrix[rating- this._rating_start][row_idx] /** rating_weight[rating] */
 		;
 	}
 
