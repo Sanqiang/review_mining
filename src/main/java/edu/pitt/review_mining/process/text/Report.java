@@ -51,12 +51,13 @@ public class Report {
 				String[] items = line.split("\t");
 				if (items.length == 3) {
 					int rating = Integer.parseInt(items[0]);
+					long time = Long.parseLong(items[1]);
 					String review = items[2];
 					int n_words = review.split(" ").length;
 					double review_weight = ku.getWeight(review_idx, rating);
 					if ((review_weight >= limit && weight_cut) || (random_sample && Math.random() < limit)
 							|| (len_cut && review.length() >= len_limit)) {
-						process.processReviews(review, review_idx, review_weight, rating);
+						process.processReviews(review, review_idx, review_weight, rating,time);
 						++process_idx;
 						process_words += n_words;
 					}

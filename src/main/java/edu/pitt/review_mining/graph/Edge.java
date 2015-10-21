@@ -20,9 +20,10 @@ public class Edge implements Cloneable, Serializable {
 	private boolean _is_negative;
 	private int _rating = 0;
 	private String _sentence;
+	private long _time;
 
 	public Edge(Node gov, Node dep, DependencyType type, double review_weight, boolean is_negative, int rating,
-			String sentence) {
+			String sentence, long time) {
 		this._type = type;
 		this._dep = dep;
 		this._gov = gov;
@@ -31,10 +32,15 @@ public class Edge implements Cloneable, Serializable {
 		this._occurs = new HashMap<>();
 		this._rating = rating;
 		this._sentence = sentence;
+		this._time = time;
 	}
 
 	public Edge(Node gov, Node dep, DependencyType type, double review_weight) {
-		this(gov, dep, type, review_weight, false, -1, "");
+		this(gov, dep, type, review_weight, false, -1, "", 0);
+	}
+
+	public long getTime() {
+		return this._time;
 	}
 
 	public String getSentence() {

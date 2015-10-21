@@ -74,8 +74,8 @@ public class Graph implements Serializable {
 		return createEdge(gov, dep, type, sentence_idx, word_idx, 0);
 	}
 
-	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx, int pos_feature,double review_weight, boolean is_negative, int rating, String sentence) {
-		Edge e = new Edge(gov, dep, type,review_weight,is_negative,rating,sentence);
+	public Edge createEdge(Node gov, Node dep, DependencyType type, int sentence_idx, int word_idx, int pos_feature,double review_weight, boolean is_negative, int rating, String sentence, long time) {
+		Edge e = new Edge(gov, dep, type,review_weight,is_negative,rating,sentence,time);
 		e.setFeatures(pos_feature);
 		if (_edges.containsKey(e.getIdentify())) {
 			e = _edges.get(e.getIdentify());
