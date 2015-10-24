@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -53,8 +54,10 @@ public class Report {
 		public int len_limit;
 		// sample by rating
 		public boolean sampling_by_rating = false;
+		public HashMap<Integer, Double> weight_rating = null;
 		// sample by jump
 		public boolean sampling_by_jump = false;
+		public int len_jump;
 	}
 
 	public static Graph readData(String path_data, String path_weigth, ReadObj obj) {
@@ -82,9 +85,14 @@ public class Report {
 						review_weight = ku.getWeight(review_idx, rating);
 					}
 
+					double rand_num = Math.random();
+
 					if ((obj.sampling_by_weight && review_weight >= obj.weight_limit)
-							|| (obj.sample_by_ramdom && Math.random() < obj.random_limit)
-							|| (obj.random_by_length && review.length() >= obj.len_limit) || obj.no_sampling) {
+							|| (obj.sample_by_ramdom && rand_num < obj.random_limit)
+							|| (obj.random_by_length && review.length() >= obj.len_limit)
+							|| (obj.sampling_by_jump && review_idx % obj.len_jump == 0)
+							|| (obj.sampling_by_rating && rand_num*obj.weight_rating.get(rating) < obj.random_limit * obj.weight_rating.get(rating))
+							|| (obj.no_sampling)) {
 						process.processReviews(review, review_idx, review_weight, rating, time);
 						++process_idx;
 						process_words += n_words;
@@ -432,6 +440,36 @@ public class Report {
 			}
 		}
 		return 0;
+	}
+
+	public static HashMap<Integer, Double> getWeightByRating(String path_data) {
+		HashMap<Integer, Double> weight = new HashMap<>();
+		BufferedReader reader = null;
+		int sum = 0;
+		try {
+			reader = new BufferedReader(new FileReader(new File(path_data)));
+			String line = null;
+			while ((line = reader.readLine()) != null) {
+				String[] items = line.split("\t");
+				if (items.length == 3) {
+					int rating = Integer.parseInt(items[0]);
+					if (!weight.containsKey(rating)) {
+						weight.put(rating, 0d);
+					}
+					weight.put(rating, weight.get(rating) + 1);
+					++sum;
+				} else {
+					System.err.println(line);
+				}
+			}
+			reader.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		for (int rating : weight.keySet()) {
+			weight.put(rating, weight.get(rating) / sum);
+		}
+		return weight;
 	}
 
 	private static SortedSet<Map.Entry<String, ArrayList<JsonObject>>> entriesSortedByValues(
