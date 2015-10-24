@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.sql.Struct;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -35,9 +36,30 @@ import edu.pitt.review_mining.utility.Stemmer;
 
 public class Report {
 
-	public static Graph readData(String path_data, String path_weigth,boolean weight_cut, double limit, boolean random_sample,
-			int ditr_interval, int rating_scale, boolean len_cut, int len_limit, int rating_start) {
-		KalmanUtility ku = new KalmanUtility(path_weigth, ditr_interval, rating_scale, rating_start);
+	public static class ReadObj {
+		// use all
+		public boolean no_sampling = false;
+		// my sampling method
+		public boolean sampling_by_weight = false;
+		public double weight_limit;
+		public int ditr_interval;
+		public int rating_scale;
+		public int rating_start;
+		// simple random sampling
+		public boolean sample_by_ramdom = false;
+		public double random_limit;
+		// longest length
+		public boolean random_by_length = false;
+		public int len_limit;
+		// sample by rating
+		public boolean sampling_by_rating = false;
+		// sample by jump
+		public boolean sampling_by_jump = false;
+	}
+
+	public static Graph readData(String path_data, String path_weigth, ReadObj obj) {
+		KalmanUtility ku = obj.sampling_by_weight
+				? new KalmanUtility(path_weigth, obj.ditr_interval, obj.rating_scale, obj.rating_start) : null;
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
 		try {
@@ -54,10 +76,16 @@ public class Report {
 					long time = Long.parseLong(items[1]);
 					String review = items[2];
 					int n_words = review.split(" ").length;
-					double review_weight = ku.getWeight(review_idx, rating);
-					if ((review_weight >= limit && weight_cut) || (random_sample && Math.random() < limit)
-							|| (len_cut && review.length() >= len_limit)) {
-						process.processReviews(review, review_idx, review_weight, rating,time);
+
+					double review_weight = 0d;
+					if (obj.sampling_by_weight) {
+						review_weight = ku.getWeight(review_idx, rating);
+					}
+
+					if ((obj.sampling_by_weight && review_weight >= obj.weight_limit)
+							|| (obj.sample_by_ramdom && Math.random() < obj.random_limit)
+							|| (obj.random_by_length && review.length() >= obj.len_limit) || obj.no_sampling) {
+						process.processReviews(review, review_idx, review_weight, rating, time);
 						++process_idx;
 						process_words += n_words;
 					}
@@ -80,11 +108,13 @@ public class Report {
 		return process.getGraph();
 	}
 
-	public static Graph readData(String path_data, String path_weigth,boolean weight_cut, double limit, boolean random_sample,
-			int ditr_interval, int rating_scale, int rating_start) {
-		return readData(path_data, path_weigth,weight_cut, limit, random_sample, ditr_interval, rating_scale, false,
-				Integer.MAX_VALUE, rating_start);
-	}
+	// public static Graph readData(String path_data, String path_weigth,boolean
+	// weight_cut, double limit, boolean random_sample,
+	// int ditr_interval, int rating_scale, int rating_start) {
+	// return readData(path_data, path_weigth,weight_cut, limit, random_sample,
+	// ditr_interval, rating_scale, false,
+	// Integer.MAX_VALUE, rating_start);
+	// }
 
 	public static void generateReviewReport(String path, int rating_scale) {
 		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20, rating_scale, 1);

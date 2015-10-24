@@ -1,0 +1,10 @@
+food_POS_4
+atmospher_NEG_5
+null_POS_1
+atmospher_POS_6
+servic_POS_8
+place_POS_7
+food_NEG_2
+null_NEG_3
+servic_NEG_9
+place_NEG_10

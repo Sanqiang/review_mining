@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 import edu.pitt.review_mining.graph.Graph;
 import edu.pitt.review_mining.process.text.Report;
+import edu.pitt.review_mining.process.text.Report.ReadObj;
 import edu.pitt.review_mining.utility.Config;
 import edu.pitt.review_mining.utility.Helper;
 
@@ -25,7 +26,9 @@ public class SentEva {
 			map_all = (HashMap<String, Double>) oin.readObject();
 			oin.close();
 		} else {
-			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, false, -1, false, 25, 4, 0);
+			ReadObj readObj = new ReadObj();
+			readObj.no_sampling = true;
+			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
 			map_all = Report.intepretGraphEdge(graph, "output/movie/result/edge_all_movie.csv");
 			ObjectOutputStream oout_all = new ObjectOutputStream(new FileOutputStream(map_all_obj));
 			oout_all.writeObject(map_all);
@@ -39,7 +42,13 @@ public class SentEva {
 			map_reduce = (HashMap<String, Double>) oin.readObject();
 			oin.close();
 		} else {
-			Graph graph1 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, true, 0.0166040503, false, 25, 4, 0);
+			ReadObj readObj = new ReadObj();
+			readObj.sampling_by_weight = true;
+			readObj.weight_limit = 0.0166040503d;
+			readObj.rating_scale = 4;
+			readObj.rating_start = 0;
+			readObj.ditr_interval = 25;
+			Graph graph1 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
 			map_reduce = Report.intepretGraphEdge(graph1, "edge_reduce_movie.csv");
 			ObjectOutputStream oout_reduce = new ObjectOutputStream(new FileOutputStream(map_reduce_obj));
 			oout_reduce.writeObject(map_reduce);
@@ -53,15 +62,21 @@ public class SentEva {
 			map_reduce_bylen = (HashMap<String, Double>) oin.readObject();
 			oin.close();
 		} else {
-			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, false, -1, false, 25, 4, true,
-					Report.getReviewLenLimit(Config.PATH_TEXT, .08), 0);
+			ReadObj readObj = new ReadObj();
+			readObj.random_by_length = true;
+			readObj.len_limit = Report.getReviewLenLimit(Config.PATH_TEXT, .08);
+			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
+
 			map_reduce_bylen = Report.intepretGraphEdge(graph, "output/movie/result/map_reduce_bylen.csv");
 			ObjectOutputStream oout_all = new ObjectOutputStream(new FileOutputStream(map_reduce_bylen_obj));
 			oout_all.writeObject(map_reduce_bylen);
 			oout_all.close();
 		}
 
-		Graph graph2 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, false, 0.226, true, 25, 4, 0);
+		ReadObj readObj = new ReadObj();
+		readObj.sample_by_ramdom = true;
+		readObj.random_limit = .226;
+		Graph graph2 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
 		HashMap<String, Double> map_reduce_sample = Report.intepretGraphEdge(graph2,
 				"output/movie/result/edge_reduce_sample_movie.csv");
 
@@ -84,7 +99,9 @@ public class SentEva {
 			map_all = (HashMap<String, Double>) oin.readObject();
 			oin.close();
 		} else {
-			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, false, -1, false, 20, 5, 1);
+			ReadObj readObj = new ReadObj();
+			readObj.no_sampling = true;
+			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
 			map_all = Report.intepretGraphEdge(graph, "output/ccwater/result/edge_all_ccwater.csv");
 			ObjectOutputStream oout_all = new ObjectOutputStream(new FileOutputStream(map_all_obj));
 			oout_all.writeObject(map_all);
@@ -93,22 +110,24 @@ public class SentEva {
 
 		String map_reduce_obj = "output/ccwater/model/map_reduce_ccwater";
 		HashMap<String, Double> map_reduce = null;
-		// if (new File(map_reduce_obj).exists()) {
-		// ObjectInputStream oin = new ObjectInputStream(new
-		// FileInputStream(map_reduce_obj));
-		// map_reduce = (HashMap<String, Double>) oin.readObject();
-		// oin.close();
-		// } else {
-		Graph graph1 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, true, 0.1075069783, false, 20, 5, 1);
-		map_reduce = Report.intepretGraphEdge(graph1, "output/ccwater/result/edge_reduce_ccwater.csv");
-		ObjectOutputStream oout_reduce = new ObjectOutputStream(new FileOutputStream(map_reduce_obj));
-		oout_reduce.writeObject(map_reduce);
-		oout_reduce.close();
-		// }
-
-		Graph graph2 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, false, 0.1, true, 20, 5, 1);
-		HashMap<String, Double> map_reduce_sample = Report.intepretGraphEdge(graph2, "edge_reduce_sample_ccwater.csv");
-
+		if (new File(map_reduce_obj).exists()) {
+			ObjectInputStream oin = new ObjectInputStream(new FileInputStream(map_reduce_obj));
+			map_reduce = (HashMap<String, Double>) oin.readObject();
+			oin.close();
+		} else {
+			ReadObj readObj = new ReadObj();
+			readObj.sampling_by_weight = true;
+			readObj.weight_limit = 0.1075069783d;
+			readObj.rating_scale = 5;
+			readObj.rating_start = 1;
+			readObj.ditr_interval = 20;
+			Graph graph1 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
+			map_reduce = Report.intepretGraphEdge(graph1, "output/ccwater/result/edge_reduce_ccwater.csv");
+			ObjectOutputStream oout_reduce = new ObjectOutputStream(new FileOutputStream(map_reduce_obj));
+			oout_reduce.writeObject(map_reduce);
+			oout_reduce.close();
+		}
+		
 		String map_reduce_bylen_obj = "output/ccwater/model/map_reduce_bylen";
 		HashMap<String, Double> map_reduce_bylen = null;
 		if (new File(map_reduce_bylen_obj).exists()) {
@@ -116,13 +135,21 @@ public class SentEva {
 			map_reduce_bylen = (HashMap<String, Double>) oin.readObject();
 			oin.close();
 		} else {
-			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, false, -1, false, 20, 5, true,
-					Report.getReviewLenLimit(Config.PATH_TEXT, .1), 1);
+
+			ReadObj readObj = new ReadObj();
+			readObj.random_by_length = true;
+			readObj.len_limit = Report.getReviewLenLimit(Config.PATH_TEXT, .1);
+			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
 			map_reduce_bylen = Report.intepretGraphEdge(graph, "output/ccwater/result/map_reduce_bylen.csv");
 			ObjectOutputStream oout_all = new ObjectOutputStream(new FileOutputStream(map_reduce_bylen_obj));
 			oout_all.writeObject(map_reduce_bylen);
 			oout_all.close();
 		}
+		ReadObj readObj = new ReadObj();
+		readObj.sample_by_ramdom = true;
+		readObj.random_limit = .1;
+		Graph graph2 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
+		HashMap<String, Double> map_reduce_sample = Report.intepretGraphEdge(graph2, "edge_reduce_sample_ccwater.csv");
 
 		System.out.print(Helper.getCosinSim(map_all, map_reduce));
 		System.out.print("-");
