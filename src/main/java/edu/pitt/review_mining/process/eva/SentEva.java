@@ -73,29 +73,18 @@ public class SentEva {
 			oout_all.close();
 		}
 
-		String map_reduce_byjump_obj = "output/movie/model/map_reduce_byjump";
-		HashMap<String, Double> map_reduce_byjump = null;
-		if (new File(map_reduce_byjump_obj).exists()) {
-			ObjectInputStream oin = new ObjectInputStream(new FileInputStream(map_reduce_byjump_obj));
-			map_reduce_byjump = (HashMap<String, Double>) oin.readObject();
-			oin.close();
-		} else {
-			ReadObj readObj = new ReadObj();
-			readObj.sampling_by_jump = true;
-			readObj.len_jump = 5;
-			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
-			map_reduce_byjump = Report.intepretGraphEdge(graph, "output/movie/result/map_reduce_byjump.csv");
-			ObjectOutputStream oout_all = new ObjectOutputStream(new FileOutputStream(map_reduce_byjump_obj));
-			oout_all.writeObject(map_reduce_byjump);
-			oout_all.close();
-		}
-
 		ReadObj readObj = new ReadObj();
 		readObj.sample_by_ramdom = true;
 		readObj.random_limit = .226;
 		Graph graph2 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
 		HashMap<String, Double> map_reduce_sample = Report.intepretGraphEdge(graph2,
 				"output/movie/result/edge_reduce_sample_movie.csv");
+
+		readObj = new ReadObj();
+		readObj.sampling_by_jump = true;
+		readObj.len_jump = 5;
+		Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
+		HashMap<String, Double> map_reduce_byjump = Report.intepretGraphEdge(graph, "output/movie/result/map_reduce_byjump.csv");
 		
 		readObj = new ReadObj();
 		readObj.sampling_by_rating = true;
@@ -174,28 +163,18 @@ public class SentEva {
 			oout_all.close();
 		}
 
-		String map_reduce_byjump_obj = "output/ccwater/model/map_reduce_byjump";
-		HashMap<String, Double> map_reduce_byjump = null;
-		if (new File(map_reduce_byjump_obj).exists()) {
-			ObjectInputStream oin = new ObjectInputStream(new FileInputStream(map_reduce_byjump_obj));
-			map_reduce_byjump = (HashMap<String, Double>) oin.readObject();
-			oin.close();
-		} else {
-			ReadObj readObj = new ReadObj();
-			readObj.sampling_by_jump = true;
-			readObj.len_jump = 10;
-			Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
-			map_reduce_byjump = Report.intepretGraphEdge(graph, "output/ccwater/result/map_reduce_byjump.csv");
-			ObjectOutputStream oout_all = new ObjectOutputStream(new FileOutputStream(map_reduce_byjump_obj));
-			oout_all.writeObject(map_reduce_byjump);
-			oout_all.close();
-		}
-
 		ReadObj readObj = new ReadObj();
 		readObj.sample_by_ramdom = true;
 		readObj.random_limit = .1;
 		Graph graph2 = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
 		HashMap<String, Double> map_reduce_sample = Report.intepretGraphEdge(graph2, "edge_reduce_sample_ccwater.csv");
+
+		readObj = new ReadObj();
+		readObj.sampling_by_jump = true;
+		readObj.len_jump = 10;
+		Graph graph = Report.readData(Config.PATH_TEXT, Config.PATH_WEIGHT, readObj);
+		HashMap<String, Double> map_reduce_byjump = Report.intepretGraphEdge(graph,
+				"output/ccwater/result/map_reduce_byjump.csv");
 
 		readObj = new ReadObj();
 		readObj.sampling_by_rating = true;

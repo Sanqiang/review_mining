@@ -5,8 +5,12 @@ import edu.pitt.review_mining.process.eva.SentEva;
 public class CLI {
 
 	public static void main(String[] args) throws Exception {
-		SentEva.evaluateMovieReview();
-		// SentEva.evaluateCoconutWater();
+		for (int i = 0; i < 1000; i++) {
+			SentEva.evaluateMovieReview();
+			//SentEva.evaluateCoconutWater();
+			System.out.println();
+		}
+		
 		// Report.generateReviewReport(Config.PATH_TEXT);
 	}
 }

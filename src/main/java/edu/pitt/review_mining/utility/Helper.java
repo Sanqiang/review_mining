@@ -118,7 +118,7 @@ public class Helper {
 		return (val >> pos) % 2 > 0;
 	}
 
-	public static double getCosinSim(HashMap<String, Double> map1, HashMap<String, Double> map2) {
+	public static double getCosinSim2(HashMap<String, Double> map1, HashMap<String, Double> map2) {
 		double sim = 0d, norm1 = 0d, norm2 = 0d;
 		for (String key1 : map1.keySet()) {
 			if (map2.containsKey(key1)) {
@@ -128,6 +128,33 @@ public class Helper {
 		}
 		for (String key2 : map2.keySet()) {
 			norm2 += map2.get(key2) * map2.get(key2);
+		}
+		sim /= (Math.sqrt(norm1) * Math.sqrt(norm2));
+		return sim;
+	}
+	
+	public static double getCosinSim(HashMap<String, Double> map1, HashMap<String, Double> map2) {
+		double sim = 0d, norm1 = 0d, norm2 = 0d, mean1 = 0d, mean2 = 0d;
+		int count1 = 0, count2= 0;
+		for (String key1 : map1.keySet()) {
+			mean1 += map1.get(key1);
+			++count1;
+		}
+		mean1 /= count1;
+		for (String key2 : map2.keySet()) {
+			mean2 += map2.get(key2);
+			++count2;
+		}
+		mean2 /= count2;
+		
+		for (String key1 : map1.keySet()) {
+			if (map2.containsKey(key1)) {
+				sim += (map1.get(key1)-mean1) * (map2.get(key1)-mean2);
+			}
+			norm1 += (map1.get(key1)-mean1) * (map1.get(key1)-mean1);
+		}
+		for (String key2 : map2.keySet()) {
+			norm2 += (map2.get(key2)-mean2) * (map2.get(key2) - mean2);
 		}
 		sim /= (Math.sqrt(norm1) * Math.sqrt(norm2));
 		return sim;

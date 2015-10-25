@@ -61,8 +61,14 @@ public class Report {
 	}
 
 	public static Graph readData(String path_data, String path_weigth, ReadObj obj) {
+		// prepare var
 		KalmanUtility ku = obj.sampling_by_weight
 				? new KalmanUtility(path_weigth, obj.ditr_interval, obj.rating_scale, obj.rating_start) : null;
+		int[] jump_idx = new int[1000];
+		for (int i = 0; i < jump_idx.length; i++) {
+			jump_idx[i] = (int) (obj.len_jump * Math.random());
+		}
+
 		ProcessUtility process = new ProcessUtility();
 		BufferedReader reader = null;
 		try {
@@ -90,8 +96,10 @@ public class Report {
 					if ((obj.sampling_by_weight && review_weight >= obj.weight_limit)
 							|| (obj.sample_by_ramdom && rand_num < obj.random_limit)
 							|| (obj.random_by_length && review.length() >= obj.len_limit)
-							|| (obj.sampling_by_jump && review_idx % obj.len_jump == 0)
-							|| (obj.sampling_by_rating && rand_num*obj.weight_rating.get(rating) < obj.random_limit * obj.weight_rating.get(rating))
+							|| (obj.sampling_by_jump
+									&& jump_idx[review_idx / obj.len_jump] == review_idx % obj.len_jump)
+							|| (obj.sampling_by_rating && rand_num * obj.weight_rating.get(rating) < obj.random_limit
+									* obj.weight_rating.get(rating))
 							|| (obj.no_sampling)) {
 						process.processReviews(review, review_idx, review_weight, rating, time);
 						++process_idx;
@@ -105,24 +113,16 @@ public class Report {
 			}
 			reader.close();
 			double portion_item = (double) process_idx / review_idx;
-			System.out.println("Processed Item: " + portion_item);
+			// System.out.println("Processed Item: " + portion_item);
 			double portion_words = (double) process_words / total_words;
-			System.out.println("Processed Words: " + portion_words);
+			// System.out.println("Processed Words: " + portion_words);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
-			System.out.println("finish !");
+			// System.out.println("finish !");
 		}
 		return process.getGraph();
 	}
-
-	// public static Graph readData(String path_data, String path_weigth,boolean
-	// weight_cut, double limit, boolean random_sample,
-	// int ditr_interval, int rating_scale, int rating_start) {
-	// return readData(path_data, path_weigth,weight_cut, limit, random_sample,
-	// ditr_interval, rating_scale, false,
-	// Integer.MAX_VALUE, rating_start);
-	// }
 
 	public static void generateReviewReport(String path, int rating_scale) {
 		KalmanUtility ku = new KalmanUtility(Config.PATH_WEIGHT, 20, rating_scale, 1);
