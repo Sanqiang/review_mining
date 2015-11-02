@@ -6,7 +6,8 @@ public class CLI {
 
 	public static void main(String[] args) throws Exception {
 		for (int i = 0; i < 1000; i++) {
-			SentEva.evaluateMovieReview();
+			SentEva.evaluateB00EOE0WKQ();
+			//SentEva.evaluateMovieReview();
 			//SentEva.evaluateCoconutWater();
 			System.out.println();
 		}

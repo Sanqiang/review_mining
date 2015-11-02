@@ -12,10 +12,59 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 public class Data {
+
+	static void processAmazonProduct() {
+		HashMap<String, Integer> counts = new HashMap<>();
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\complete.json")));
+			String line = null;
+			while (null != (line = reader.readLine())) {
+				JSONTokener tokener = new JSONTokener(line);
+				JSONObject obj = new JSONObject(tokener);
+				String asin = obj.getString("asin");
+
+				if (!counts.containsKey(asin)) {
+					counts.put(asin, 0);
+				}
+				counts.put(asin, 1 + counts.get(asin));
+			}
+			reader.close();
+
+			SortedSet<Map.Entry<String, Integer>> sortedcounts = new TreeSet<>(
+					new Comparator<Map.Entry<String, Integer>>() {
+
+						@Override
+						public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+							return o2.getValue() - o1.getValue();
+						}
+					});
+			sortedcounts.addAll(counts.entrySet());
+
+			StringBuilder sb = new StringBuilder();
+			for (Entry<String, Integer> entry : sortedcounts) {
+				sb.append(entry.getKey()).append(" ").append(entry.getValue()).append("\n");
+			}
+
+			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("C:\\git\\amazon_products.txt")));
+			writer.write(sb.toString());
+			writer.close();
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 	static void processAmazon(String product_id) {
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\complete.json")));
@@ -49,9 +98,9 @@ public class Data {
 
 	}
 
-	static void processAmazon2() {
+	static void processAmazon2(String product_id) {
 		try {
-			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\B000CNB4LE.txt")));
+			BufferedReader reader = new BufferedReader(new FileReader(new File("C:\\git\\"+product_id+"_plain.txt")));
 			String line = null;
 			ArrayList<ReviewObj> list = new ArrayList<>();
 			while (null != (line = reader.readLine())) {
@@ -68,19 +117,19 @@ public class Data {
 			}
 			reader.close();
 
-			Collections.sort(list,new Comparator<ReviewObj>() {
+			Collections.sort(list, new Comparator<ReviewObj>() {
 
 				@Override
 				public int compare(ReviewObj o1, ReviewObj o2) {
 					long time1 = o1.time;
-					long time2  = o2.time;
-					return (int) (time2-time1);
+					long time2 = o2.time;
+					return (int) (time2 - time1);
 				}
 			});
-			
+
 			StringBuilder sb = new StringBuilder();
 			BufferedWriter writer = new BufferedWriter(
-					new FileWriter(new File("C:/git/review_mining/r/B000CNB4L_new.txt")));
+					new FileWriter(new File("C:/git/review_mining/r/"+product_id+"_new.txt")));
 			for (ReviewObj reviewObj : list) {
 				sb.append(reviewObj);
 			}
@@ -170,7 +219,7 @@ public class Data {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(new File("Dennis+Schwartz.txt")));
 			writer.write(sb.toString());
 			writer.close();
-			
+
 			reader_id.close();
 			reader_rating.close();
 
@@ -181,7 +230,9 @@ public class Data {
 	}
 
 	public static void main(String[] args) {
-		processAmazon2();
+		//processAmazonProduct();
+		//processAmazon("B00EOE0WKQ");
+		 processAmazon2("B00EOE0WKQ");
 		// processMovie();
 	}
 }

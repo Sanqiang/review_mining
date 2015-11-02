@@ -1,7 +1,9 @@
 require("FKF")
 require("MASS")
+id = "B000067RC4"
+path = paste("C:/git/review_mining/r/",id,"_new.txt",sep="")
 
-rating = read.table("C:/git/review_mining/r/B000CNB4LE_new.txt",sep="\t",col.names=c("rating","time","text"),quote = "")
+rating = read.table(path,sep="\t",col.names=c("rating","time","text"),quote = "")
 rating = rating[order(rating[,2]),]
 rating = rating[1:dim(rating)[1],]
 #write.table(rating,"B000CNB4LE_sorted.txt",row.names = FALSE,col.names = FALSE,quote = FALSE,sep = "\t")
@@ -54,5 +56,6 @@ for(r_id in 1:5){
   #legend("top", c("Nile flow data", "Local level (StructTS)", "Local level (fkf)"),col = c("black", "green", "blue"), lty = 1)
   #break
 }
-write.matrix(residual,file="weight_ccwater.txt",sep=" ")
+write.matrix(residual,file=paste("C:/git/review_mining/r/weight_",id,".txt",sep=""),sep=" ")
+sort(unique(c(as.matrix(residual))))
 
