@@ -93,7 +93,7 @@ public class Report {
 
 					double rand_num = Math.random();
 
-					if ((obj.sampling_by_weight && review_weight >= obj.weight_limit)
+					if ((obj.sampling_by_weight && review_weight <= obj.weight_limit)
 							|| (obj.sample_by_ramdom && rand_num < obj.random_limit)
 							|| (obj.random_by_length && review.length() >= obj.len_limit)
 							|| (obj.sampling_by_jump
@@ -113,9 +113,9 @@ public class Report {
 			}
 			reader.close();
 			double portion_item = (double) process_idx / review_idx;
-			// System.out.println("Processed Item: " + portion_item);
 			double portion_words = (double) process_words / total_words;
-			// System.out.println("Processed Words: " + portion_words);
+//			System.out.println("Processed Item: " + portion_item);
+//			System.out.println("Processed Words: " + portion_words);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {

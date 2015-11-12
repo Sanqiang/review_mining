@@ -231,8 +231,8 @@ public class Data {
 
 	public static void main(String[] args) {
 		//processAmazonProduct();
-		 //processAmazon("B000067RC4");
-		 //processAmazon2("B000067RC4");
+		 processAmazon("B005DN664S");
+		 processAmazon2("B005DN664S");
 		// processMovie();
 	}
 }
